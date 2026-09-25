@@ -1,0 +1,14 @@
+{
+  "models": [
+    {
+      "name": "jev-latest",
+      "description": "General-purpose system one model.",
+      "release_date": "2026-09-15"
+    },
+    {
+      "name": "jev-preview",
+      "description": "The most recent release, whether or not it is an official one.",
+      "release_date": "2026-09-15"
+    }
+  ]
+}
