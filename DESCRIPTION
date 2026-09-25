@@ -14,6 +14,7 @@ RoxygenNote: 8.0.0
 Suggests: 
     httptest2,
     testthat (>= 3.0.0),
+    webfakes,
     withr
 Config/testthat/edition: 3
 Imports: 
