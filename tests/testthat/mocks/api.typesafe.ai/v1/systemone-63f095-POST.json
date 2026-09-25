@@ -1,0 +1,20 @@
+{
+  "model": "jev-1.13.0",
+  "answers": {
+    "billing": { "type": "noul", "noul": 0.05 },
+    "tone": {
+      "type": "choice",
+      "choice": "angry",
+      "probabilities": { "calm": 0.15, "angry": 0.85 },
+      "confidence": 0.7
+    },
+    "urgency": {
+      "type": "score",
+      "score": 1.6,
+      "legend": { "0": "low", "1": "medium", "2": "high" },
+      "probabilities": { "0": 0.1, "1": 0.2, "2": 0.7 },
+      "confidence": 0.8
+    }
+  },
+  "usage": { "input_tokens": 350, "output_tokens": 45 }
+}

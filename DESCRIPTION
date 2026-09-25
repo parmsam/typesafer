@@ -22,4 +22,6 @@ Imports:
     jsonlite,
     rlang,
     S7,
-    tibble
+    stats,
+    tibble,
+    utils
