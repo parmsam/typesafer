@@ -154,3 +154,13 @@ tryCatch(
 `ts_models()` lists the models your account can use. `jev-latest` is the
 default. Pin a versioned ID such as `jev-1.13.0` if you have tuned thresholds
 against a specific release.
+
+## Development
+
+``` r
+devtools::test()   # uses recorded mocks; no API key needed
+devtools::check()
+```
+
+See [AGENTS.md](AGENTS.md) for the package layout, conventions, JSON
+serialization gotchas, and how the test fixtures are generated.
