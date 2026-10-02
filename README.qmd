@@ -1,0 +1,229 @@
+---
+format: gfm
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: "#>"
+---
+
+<!-- README.md is generated from README.qmd. Edit README.qmd, then run
+     `quarto render README.qmd` (needs TYPESAFE_API_KEY: the examples call the
+     live API). -->
+
+```{r}
+#| label: setup
+#| include: false
+pkgload::load_all(quiet = TRUE)
+options(width = 90)
+```
+
+# typesafer
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/parmsam/typesafer/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/parmsam/typesafer/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
+typesafer is an **unofficial** R client for the
+[TypeSafe System One API](https://docs.typesafe.ai/api). You send a piece of
+state (text or structured data) and a set of typed questions, and get back
+calibrated probabilities your code can act on:
+
+* `ts_noul()`: yes/no questions. The answer is the probability of yes.
+* `ts_choice()`: pick one of up to 255 options. The answer is the chosen
+  option, a probability for every option, and a confidence.
+* `ts_score()`: rate against 2 to 10 ordered levels. The answer is the
+  probability-weighted level, a probability for every level, and a
+  confidence.
+
+typesafer isn't affiliated with or endorsed by TypeSafe.
+
+## Installation
+
+Install the development version from GitHub:
+
+```{r}
+#| eval: false
+# install.packages("pak")
+pak::pak("parmsam/typesafer")
+```
+
+## Authentication
+
+Get an API key from TypeSafe and set it in the `TYPESAFE_API_KEY` environment
+variable, for example by adding this line to your `.Renviron`
+(`usethis::edit_r_environ()`):
+
+```
+TYPESAFE_API_KEY=your-key-here
+```
+
+## Quickstart
+
+Ask several questions about one piece of state in a single request:
+
+```{r}
+#| label: quickstart
+#| eval: false
+library(typesafer)
+```
+
+```{r}
+#| label: quickstart-call
+resp <- system_one(
+  "I was charged twice. Please help ASAP.",
+  billing = ts_noul("Is this about billing?"),
+  tone    = ts_choice("What is the tone?", c("calm", "angry")),
+  urgency = ts_score("How urgent is this?", c("low", "medium", "high"))
+)
+
+resp@answers$billing@prob
+resp@answers$tone@choice
+resp@answers$urgency@score
+```
+
+Printing the response gives a one-line summary per answer:
+
+```{r}
+resp
+```
+
+Scores use the API's 0-based scale. With levels `c("low", "medium", "high")`, a
+score near 2 means `"high"`. The full distribution is ordered by level:
+
+```{r}
+resp@answers$urgency@probabilities
+```
+
+Choice options can carry descriptions, and instructions, options, and levels
+can all be structured lists:
+
+```{r}
+ts_choice(
+  "Which team should handle this?",
+  c(
+    billing   = "Payments, invoicing, refunds",
+    technical = "Bugs, outages, integrations",
+    sales     = "Pricing, upgrades, new accounts"
+  )
+)
+
+ts_noul(
+  "Does this convey urgency?",
+  c(true = "Explicitly time-sensitive", false = "No urgency expressed")
+)
+```
+
+## Data frames
+
+`system_one_df()` sends one request per row, with every question batched into
+that request, and runs the requests in parallel. It returns the input as a
+tibble with answer columns added:
+
+```{r}
+#| label: df
+tickets <- tibble::tibble(
+  id = 1:3,
+  text = c(
+    "I was charged twice. Please help ASAP.",
+    "How do I export my data to CSV?",
+    "Your app crashed and I lost an hour of work!!"
+  )
+)
+
+system_one_df(
+  tickets,
+  state = text,
+  billing = ts_noul("Is this about billing?"),
+  tone    = ts_choice("What is the tone?", c("calm", "angry")),
+  urgency = ts_score("How urgent is this?", c("low", "medium", "high"))
+)
+```
+
+Set `probs = TRUE` to also get each choice and score probability distribution
+as a list-column. Use `on_error = "continue"` to keep the rows that succeeded
+when some requests fail. Failed rows get `NA` answers and their errors go in an
+`.error` column.
+
+## Errors and retries
+
+Requests that are rate limited (429), hit an overloaded server (529) or another
+5xx, time out (408), or fail to connect are retried twice with exponential
+backoff. `retry-after` headers are respected. Errors are classed conditions
+that inherit from `typesafer_error`:
+
+| Class                         | When                                     |
+| ----------------------------- | ---------------------------------------- |
+| `typesafer_error_auth`        | Missing API key, or HTTP 401             |
+| `typesafer_error_validation`  | HTTP 422; `err$details` lists the fields |
+| `typesafer_error_rate_limit`  | HTTP 429 or 529 after retries            |
+| `typesafer_error_server`      | Other HTTP 5xx after retries             |
+| `typesafer_error_http`        | Any unsuccessful HTTP response           |
+| `typesafer_error_connection`  | No response after retries                |
+| `typesafer_error_input`       | Invalid arguments, before any request    |
+
+Invalid questions are caught before anything is sent:
+
+```{r}
+#| error: true
+ts_score("How urgent is this?", "high")
+```
+
+API errors carry the server's message and request ID:
+
+```{r}
+#| error: true
+system_one("Hi", q = ts_noul("Is this a greeting?"), api_key = "not-a-real-key")
+```
+
+Catch them by class:
+
+```{r}
+tryCatch(
+  system_one("Hi", q = ts_noul("Is this a greeting?"), model = "no-such-model"),
+  typesafer_error_rate_limit = function(err) NULL,
+  typesafer_error_http = function(err) err$status
+)
+```
+
+## Models
+
+`ts_models()` lists the models your account can use:
+
+```{r}
+ts_models()
+```
+
+`jev-latest` is the default. Pin a versioned ID such as `jev-1.13.0` if you
+have tuned thresholds against a specific release.
+
+## Development
+
+```{r}
+#| eval: false
+devtools::test()   # uses recorded mocks; no API key needed
+devtools::check()
+```
+
+`tests/testthat/test-live.R` also runs a few tests against the live API when
+`TYPESAFE_API_KEY` is set. They're skipped on CRAN and CI.
+
+This README is generated from `README.qmd`. Edit that file, then run
+`quarto render README.qmd` with `TYPESAFE_API_KEY` set, because the examples
+call the live API.
+
+See [AGENTS.md](AGENTS.md) for the package layout, conventions, JSON
+serialization gotchas, and how the test fixtures are generated.
+
+## Acknowledgements
+
+* The [TypeSafe Python SDK](https://github.com/typesafe-ai/typesafe-sdk-python/tree/main)
+  is the reference implementation. typesafer follows its request shapes, retry
+  policy, and error handling wherever the
+  [API docs](https://docs.typesafe.ai) leave a behavior unspecified.
+* [ellmer](https://github.com/tidyverse/ellmer) inspired the design. Typed
+  questions and answers are S7 classes, requests go through httr2, and
+  `system_one_df()` is modeled on `parallel_chat_structured()`.
+
+## License
+
+MIT © Sam Parmar. See [LICENSE.md](LICENSE.md).

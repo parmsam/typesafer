@@ -2,3 +2,5 @@
 ^\.github$
 ^data-raw$
 ^AGENTS\.md$
+^README\.qmd$
+^\.quarto$
