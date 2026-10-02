@@ -92,6 +92,13 @@ Printing the response gives a one-line summary per answer:
 resp
 ```
 
+To work with the answers as data, convert the response to a one-row tibble.
+It has the same columns `system_one_df()` adds, below:
+
+```{r}
+as_tibble(resp, include_usage = TRUE)
+```
+
 Scores use the API's 0-based scale. With levels `c("low", "medium", "high")`, a
 score near 2 means `"high"`. The full distribution is ordered by level. The API
 rounds the probabilities it reports, so they may not reproduce `score` exactly:
@@ -146,15 +153,16 @@ system_one_df(
 ```
 
 Set `probs = TRUE` to also get each choice and score probability distribution
-as a list-column. Use `on_error = "continue"` to keep the rows that succeeded
+as a list-column, and `include_usage = TRUE` to add token counts. Use `on_error = "continue"` to keep the rows that succeeded
 when some requests fail. Failed rows get `NA` answers and their errors go in an
 `.error` column.
 
 ## Errors and retries
 
 Requests that are rate limited (429), hit an overloaded server (529) or another
-5xx, time out (408), or fail to connect are retried twice with exponential
-backoff. `retry-after` headers are respected. Errors are classed conditions
+5xx, time out (408), or fail to connect are retried with exponential backoff,
+up to 3 attempts by default. `retry-after` headers are respected. Use the
+`max_tries` and `timeout` arguments to change this for a single call. Errors are classed conditions
 that inherit from `typesafer_error`:
 
 | Class                         | When                                     |
@@ -201,7 +209,20 @@ ts_models()
 ```
 
 `jev-latest` is the default. Pin a versioned ID such as `jev-1.13.0` if you
-have tuned thresholds against a specific release.
+have tuned thresholds against a specific release, either per call with
+`model = "jev-1.13.0"` or for every call with the `TYPESAFE_DEFAULT_MODEL`
+environment variable:
+
+```{r}
+ts_default_model()
+```
+
+A response keeps the raw JSON it was built from in `@json`, for fields
+typesafer doesn't model yet:
+
+```{r}
+names(resp@json)
+```
 
 ## Development
 

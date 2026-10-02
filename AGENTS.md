@@ -21,6 +21,7 @@ client for the TypeSafe System One API.
 | `R/system_one.R`       | `system_one()` and shared argument checks                                |
 | `R/system_one_df.R`    | `system_one_df()`: one request per row via `httr2::req_perform_parallel()` |
 | `R/models.R`           | `ts_models()` (`GET /v1/models`)                                         |
+| `R/columns.R`          | Answer and usage columns shared by `system_one_df()` and `as_tibble(<ts_response>)` |
 | `R/utils.R`            | `abort_input()`, `ts_json()`                                             |
 | `data-raw/mocks.R`     | Regenerates the httptest2 fixtures in `tests/testthat/mocks/`            |
 
@@ -64,6 +65,13 @@ never contain the key.
   bullets with `rlang::format_error_bullets()`.
 - **cli messages:** in `{?s}` pluralization, pass the count explicitly with
   `{cli::qty(length(x))}`. Wrap `.data` as `{(.data)}`.
+- **Shared columns:** `system_one_df()` and `as_tibble(<ts_response>)` must
+  produce identical columns. Change both through `R/columns.R`, and keep the
+  test that compares them passing.
+- **Defaults** that the Python SDK takes from the environment come from
+  helper functions: `ts_api_key()` (`TYPESAFE_API_KEY`) and
+  `ts_default_model()` (`TYPESAFE_DEFAULT_MODEL`). `local_ts_env()` clears
+  both, plus `TYPESAFE_BASE_URL`, so the mock fixtures match.
 - **Retries** mirror the Python SDK: 408, 429 and 5xx plus connection
   failures; `max_tries = 3`; 30s budget; backoff 0.5s doubling up to 5s with
   25% jitter; `retry-after-ms` before `retry-after`. Keep HTTP error handling
