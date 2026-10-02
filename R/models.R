@@ -15,7 +15,7 @@
 #' }
 ts_models <- function(api_key = ts_api_key()) {
   check_api_key(api_key)
-  body <- ts_perform(ts_request("v1/models", api_key))
+  body <- ts_perform(ts_request("v1/models", api_key), api_key = api_key)
   models <- body$models %||% list()
   chr <- function(field) {
     vapply(models, function(m) as.character(m[[field]] %||% NA_character_), character(1))

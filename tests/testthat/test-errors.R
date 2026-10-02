@@ -28,6 +28,24 @@ test_that("401 is a typesafer_error_auth", {
   expect_snapshot(call_with_response(resp), error = TRUE)
 })
 
+test_that("401 hint points at where the key came from", {
+  local_ts_env()
+  httr2::local_mocked_responses(function(req) json_response(401, list(detail = "bad key")))
+
+  err <- expect_error(system_one("x", q = ts_noul("?")), class = "typesafer_error_auth")
+  expect_match(conditionMessage(err), "TYPESAFE_API_KEY", fixed = TRUE)
+
+  err <- expect_error(system_one("x", q = ts_noul("?"), api_key = "other-key"), class = "typesafer_error_auth")
+  expect_match(conditionMessage(err), "passed to `api_key`", fixed = TRUE)
+  expect_no_match(conditionMessage(err), "TYPESAFE_API_KEY", fixed = TRUE)
+
+  df <- data.frame(s = "x")
+  err <- expect_error(system_one_df(df, s, q = ts_noul("?"), api_key = "other-key"), class = "typesafer_error_auth")
+  expect_match(conditionMessage(err), "passed to `api_key`", fixed = TRUE)
+
+  expect_match(auth_hint(NULL), "defaults to the `TYPESAFE_API_KEY`", fixed = TRUE)
+})
+
 test_that("422 is a typesafer_error_validation with field details", {
   local_ts_env()
   resp <- json_response(422, list(detail = list(

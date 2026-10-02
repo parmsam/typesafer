@@ -107,7 +107,7 @@ system_one_df <- function(.data,
       if (inherits(r, "httr2_response")) {
         results[[i]] <- parse_response(httr2::resp_body_json(r, simplifyVector = FALSE), call = call)
       } else if (inherits(r, "error")) {
-        errors[[i]] <- as_typesafer_cnd(r, call = call)
+        errors[[i]] <- as_typesafer_cnd(r, api_key = api_key, call = call)
       }
     }
   }

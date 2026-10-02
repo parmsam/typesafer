@@ -41,7 +41,7 @@ system_one <- function(state, ..., model = "jev-latest", api_key = ts_api_key())
 
   req <- ts_request("v1/systemone", api_key)
   req <- ts_req_body(req, system_one_body(state, questions, model))
-  parse_response(ts_perform(req))
+  parse_response(ts_perform(req, api_key = api_key))
 }
 
 system_one_body <- function(state, questions, model) {

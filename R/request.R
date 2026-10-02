@@ -95,11 +95,11 @@ ts_retry_after <- function(resp) {
 
 # Performing ------------------------------------------------------------------
 
-ts_perform <- function(req, call = rlang::caller_env()) {
+ts_perform <- function(req, api_key = NULL, call = rlang::caller_env()) {
   resp <- tryCatch(
     httr2::req_perform(req),
     httr2_error = function(cnd) {
-      rlang::cnd_signal(as_typesafer_cnd(cnd, call = call))
+      rlang::cnd_signal(as_typesafer_cnd(cnd, api_key = api_key, call = call))
     }
   )
   httr2::resp_body_json(resp, simplifyVector = FALSE)

@@ -103,7 +103,9 @@ validation_details <- function(body) {
   )
 }
 
-http_error_cnd <- function(resp, call = rlang::caller_env()) {
+# `api_key` is the key the request was sent with, used to point a 401 at the
+# right place: the environment variable or the `api_key` argument.
+http_error_cnd <- function(resp, api_key = NULL, call = rlang::caller_env()) {
   status <- httr2::resp_status(resp)
   body <- resp_body_safely(resp)
   request_id <- httr2::resp_header(resp, "x-typesafe-request-id")
@@ -140,7 +142,7 @@ http_error_cnd <- function(resp, call = rlang::caller_env()) {
     }
   }
   if (status == 401) {
-    bullets <- c(bullets, i = "Check the key in the `TYPESAFE_API_KEY` environment variable.")
+    bullets <- c(bullets, i = auth_hint(api_key))
   }
   if (status %in% c(429, 529)) {
     bullets <- c(bullets, i = "Retries with backoff were exhausted; wait before trying again.")
@@ -162,6 +164,17 @@ http_error_cnd <- function(resp, call = rlang::caller_env()) {
   )
 }
 
+auth_hint <- function(api_key) {
+  env_key <- Sys.getenv("TYPESAFE_API_KEY")
+  if (is.null(api_key)) {
+    "Check your API key: the `api_key` argument, which defaults to the `TYPESAFE_API_KEY` environment variable."
+  } else if (nzchar(env_key) && identical(api_key, env_key)) {
+    "Check the key in the `TYPESAFE_API_KEY` environment variable."
+  } else {
+    "Check the key passed to `api_key`."
+  }
+}
+
 connection_error_cnd <- function(parent, call = rlang::caller_env()) {
   rlang::error_cnd(
     class = c("typesafer_error_connection", "typesafer_error"),
@@ -172,9 +185,9 @@ connection_error_cnd <- function(parent, call = rlang::caller_env()) {
 }
 
 # Converts an httr2 error into the matching typesafer condition.
-as_typesafer_cnd <- function(cnd, call = rlang::caller_env()) {
+as_typesafer_cnd <- function(cnd, api_key = NULL, call = rlang::caller_env()) {
   if (inherits(cnd, "httr2_http")) {
-    http_error_cnd(cnd$resp, call = call)
+    http_error_cnd(cnd$resp, api_key = api_key, call = call)
   } else if (inherits(cnd, "httr2_failure")) {
     connection_error_cnd(cnd, call = call)
   } else {
