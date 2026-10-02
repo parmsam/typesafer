@@ -1,3 +1,5 @@
+# typesafer (development version)
+
 # typesafer 0.1.0
 
 First release of typesafer, an unofficial R client for the
