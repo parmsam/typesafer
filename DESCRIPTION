@@ -8,6 +8,8 @@ Description: An unofficial client for the TypeSafe System One API
     score questions about text or structured state and get calibrated
     probabilities back as typed R objects or tidy data frames.
 License: MIT + file LICENSE
+URL: https://parmsam.github.io/typesafer/, https://github.com/parmsam/typesafer
+BugReports: https://github.com/parmsam/typesafer/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 8.0.0

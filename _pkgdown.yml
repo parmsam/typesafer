@@ -1,0 +1,35 @@
+url: https://parmsam.github.io/typesafer/
+
+template:
+  bootstrap: 5
+  light-switch: true
+  bslib:
+    primary: "#11606a"
+    navbar-bg: "#1b1f3b"
+
+home:
+  links:
+  - text: TypeSafe documentation
+    href: https://docs.typesafe.ai/
+  - text: TypeSafe Python SDK
+    href: https://github.com/typesafe-ai/typesafe-sdk-python/tree/main
+
+reference:
+- title: Ask questions
+  desc: Send state and typed questions to the System One API.
+  contents:
+  - system_one
+  - system_one_df
+- title: Question types
+  contents:
+  - ts_question
+- title: Answers
+  contents:
+  - ts_response
+- title: Models and authentication
+  contents:
+  - ts_models
+  - ts_api_key
+- title: Errors
+  contents:
+  - typesafer_error

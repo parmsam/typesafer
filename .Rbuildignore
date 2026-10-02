@@ -4,3 +4,6 @@
 ^AGENTS\.md$
 ^README\.qmd$
 ^\.quarto$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
