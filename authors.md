@@ -7,7 +7,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/parmsam/typesafer/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/parmsam/typesafer/blob/v0.1.0/DESCRIPTION)
 
 Parmar S (2026). *typesafer: Unofficial Client for the TypeSafe System
 One API*. R package version 0.1.0,
