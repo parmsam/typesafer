@@ -4,7 +4,7 @@
      `quarto render README.qmd` (needs TYPESAFE_API_KEY: the examples call the
      live API). -->
 
-# typesafer <a href="https://github.com/parmsam/typesafer"><img src="man/figures/logo.png" align="right" height="240" alt="The package's hex sticker: a navy hexagon with an amber border. Inside, a small bar chart of probabilities sits between curly JSON braces, with the tallest bar highlighted in amber and labelled 0.92. The word typesafer is set in white monospace below." /></a>
+# typesafer <a href="https://github.com/parmsam/typesafer"><img src="man/figures/logo.png" align="right" height="138" alt="The package's hex sticker: a navy hexagon with an amber border. Inside, a small bar chart of probabilities sits between curly JSON braces, with the tallest bar highlighted in amber and labelled 0.92. The word typesafer is set in white monospace below." /></a>
 
 <!-- badges: start -->
 
