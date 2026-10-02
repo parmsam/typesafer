@@ -23,11 +23,15 @@ Send state and typed questions to the System One API.
   [`ts_answer_score()`](https://parmsam.github.io/typesafer/reference/ts_response.md)
   [`ts_response()`](https://parmsam.github.io/typesafer/reference/ts_response.md)
   : Answer and response types
+- [`as_tibble.ts_response`](https://parmsam.github.io/typesafer/reference/as_tibble.ts_response.md)
+  : Convert a response to a tibble
 
 ## Models and authentication
 
 - [`ts_models()`](https://parmsam.github.io/typesafer/reference/ts_models.md)
   : List available models
+- [`ts_default_model()`](https://parmsam.github.io/typesafer/reference/ts_default_model.md)
+  : Get the default model
 - [`ts_api_key()`](https://parmsam.github.io/typesafer/reference/ts_api_key.md)
   : Get the TypeSafe API key
 

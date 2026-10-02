@@ -13,7 +13,10 @@ in the same order; and @confidence.
 
 
 Confidence runs from 0 to 1 and summarizes how concentrated the probability
-distribution is. See https://docs.typesafe.ai/confidence."><meta property="og:description" content="system_one() returns a ts_response holding one answer per question:
+distribution is. See https://docs.typesafe.ai/confidence.
+A ts_response also keeps the parsed response body in @json, so you can
+reach fields typesafer doesn't model yet (including answers of question
+types it doesn't recognize). Its structure follows the API and may change."><meta property="og:description" content="system_one() returns a ts_response holding one answer per question:
 ts_answer_noul: @prob, the probability (0 to 1) that the answer is
 yes. Nouls have no separate confidence.
 ts_answer_choice: @choice, the highest-probability option;
@@ -27,7 +30,10 @@ in the same order; and @confidence.
 
 
 Confidence runs from 0 to 1 and summarizes how concentrated the probability
-distribution is. See https://docs.typesafe.ai/confidence."><meta property="og:image" content="https://parmsam.github.io/typesafer/logo.png"></head><body>
+distribution is. See https://docs.typesafe.ai/confidence.
+A ts_response also keeps the parsed response body in @json, so you can
+reach fields typesafer doesn't model yet (including answers of question
+types it doesn't recognize). Its structure follows the API and may change."><meta property="og:image" content="https://parmsam.github.io/typesafer/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -35,7 +41,7 @@ distribution is. See https://docs.typesafe.ai/confidence."><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">typesafer</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,7 +68,7 @@ distribution is. See https://docs.typesafe.ai/confidence."><meta property="og:im
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Answer and response types</h1>
-      <small class="dont-index">Source: <a href="https://github.com/parmsam/typesafer/blob/v0.1.0/R/answers.R" class="external-link"><code>R/answers.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/parmsam/typesafer/blob/main/R/answers.R" class="external-link"><code>R/answers.R</code></a></small>
       <div class="d-none name"><code>ts_response.Rd</code></div>
     </div>
 
@@ -79,6 +85,9 @@ and <code>@confidence</code>.</p></li>
 in the same order; and <code>@confidence</code>.</p></li>
 </ul><p>Confidence runs from 0 to 1 and summarizes how concentrated the probability
 distribution is. See <a href="https://docs.typesafe.ai/confidence" class="external-link">https://docs.typesafe.ai/confidence</a>.</p>
+<p>A <code>ts_response</code> also keeps the parsed response body in <code>@json</code>, so you can
+reach fields typesafer doesn't model yet (including answers of question
+types it doesn't recognize). Its structure follows the API and may change.</p>
     </div>
 
     <div class="section level2">
@@ -98,7 +107,12 @@ distribution is. See <a href="https://docs.typesafe.ai/confidence" class="extern
 <span>  confidence <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">ts_response</span><span class="op">(</span>answers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>, usage <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">ts_response</span><span class="op">(</span></span>
+<span>  answers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
+<span>  usage <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
+<span>  json <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -121,6 +135,10 @@ see Description.</p></dd>
 <dt id="arg-usage">usage<a class="anchor" aria-label="anchor" href="#arg-usage"></a></dt>
 <dd><p>A named integer vector with <code>input_tokens</code> and
 <code>output_tokens</code>.</p></dd>
+
+
+<dt id="arg-json">json<a class="anchor" aria-label="anchor" href="#arg-json"></a></dt>
+<dd><p>The parsed response body, as a list.</p></dd>
 
 </dl></div>
     <div class="section level2">

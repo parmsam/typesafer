@@ -13,10 +13,13 @@ system_one_df(
   .data,
   state,
   ...,
-  model = "jev-latest",
+  model = ts_default_model(),
   probs = FALSE,
+  include_usage = FALSE,
   max_active = 10,
   on_error = c("stop", "continue"),
+  max_tries = 3,
+  timeout = ts_timeout(),
   api_key = ts_api_key()
 )
 ```
@@ -47,7 +50,10 @@ system_one_df(
 
 - model:
 
-  The model to use. `"jev-latest"` is TypeSafe's flagship model; pin a
+  The model to use. Defaults to
+  [`ts_default_model()`](https://parmsam.github.io/typesafer/reference/ts_default_model.md),
+  which is `"jev-latest"`, TypeSafe's flagship model, unless the
+  `TYPESAFE_DEFAULT_MODEL` environment variable says otherwise. Pin a
   versioned ID such as `"jev-1.13.0"` to keep answers stable. See
   [`ts_models()`](https://parmsam.github.io/typesafer/reference/ts_models.md).
 
@@ -55,6 +61,11 @@ system_one_df(
 
   If `TRUE`, also add a `<name>_probs` list-column for each choice and
   score question holding its full probability distribution.
+
+- include_usage:
+
+  If `TRUE`, also add `input_tokens` and `output_tokens` columns with
+  each row's token usage (`NA` for failed rows).
 
 - max_active:
 
@@ -73,6 +84,18 @@ system_one_df(
     `NA`, add a `.error` list-column holding each row's error (or
     `NULL`), and warn with a count of failed rows.
 
+- max_tries:
+
+  Maximum number of attempts per request, including the first. Requests
+  that fail with 408, 429, 5xx, or a connection failure are retried with
+  exponential backoff, within a 30 second retry budget. Use `1` to
+  disable retries.
+
+- timeout:
+
+  Timeout for each attempt, in seconds. Defaults to the
+  `typesafer.timeout` option, or 10.
+
 - api_key:
 
   API key; defaults to
@@ -89,6 +112,9 @@ system_one_df(
 
 - score: `name` (0-based expected level) and `name_confidence`, plus
   `name_probs` (double vectors ordered by level) when `probs = TRUE`.
+
+Plus `input_tokens` and `output_tokens` when `include_usage = TRUE`, and
+`.error` when `on_error = "continue"`.
 
 ## See also
 

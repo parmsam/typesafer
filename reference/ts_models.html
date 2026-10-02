@@ -13,7 +13,7 @@ or not they're listed. See https://docs.typesafe.ai/models."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">typesafer</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,7 @@ or not they're listed. See https://docs.typesafe.ai/models."><meta property="og:
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>List available models</h1>
-      <small class="dont-index">Source: <a href="https://github.com/parmsam/typesafer/blob/v0.1.0/R/models.R" class="external-link"><code>R/models.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/parmsam/typesafer/blob/main/R/models.R" class="external-link"><code>R/models.R</code></a></small>
       <div class="d-none name"><code>ts_models.Rd</code></div>
     </div>
 
@@ -53,14 +53,26 @@ or not they're listed. See <a href="https://docs.typesafe.ai/models" class="exte
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ts_models</span><span class="op">(</span>api_key <span class="op">=</span> <span class="fu"><a href="ts_api_key.html">ts_api_key</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ts_models</span><span class="op">(</span>max_tries <span class="op">=</span> <span class="fl">3</span>, timeout <span class="op">=</span> <span class="fu">ts_timeout</span><span class="op">(</span><span class="op">)</span>, api_key <span class="op">=</span> <span class="fu"><a href="ts_api_key.html">ts_api_key</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-api-key">api_key<a class="anchor" aria-label="anchor" href="#arg-api-key"></a></dt>
+<dl><dt id="arg-max-tries">max_tries<a class="anchor" aria-label="anchor" href="#arg-max-tries"></a></dt>
+<dd><p>Maximum number of attempts per request, including the
+first. Requests that fail with 408, 429, 5xx, or a connection failure are
+retried with exponential backoff, within a 30 second retry budget. Use
+<code>1</code> to disable retries.</p></dd>
+
+
+<dt id="arg-timeout">timeout<a class="anchor" aria-label="anchor" href="#arg-timeout"></a></dt>
+<dd><p>Timeout for each attempt, in seconds. Defaults to the
+<code>typesafer.timeout</code> option, or 10.</p></dd>
+
+
+<dt id="arg-api-key">api_key<a class="anchor" aria-label="anchor" href="#arg-api-key"></a></dt>
 <dd><p>API key; defaults to <code><a href="ts_api_key.html">ts_api_key()</a></code>.</p></dd>
 
 </dl></div>

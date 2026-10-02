@@ -32,8 +32,9 @@ specific classes:
   connection, or timeout failure), after retries are exhausted.
 
 Requests that fail with 408, 429, or 5xx, or with a connection failure,
-are retried up to twice with exponential backoff (0.5s doubling to at
-most 5s, with jitter), within a 30 second budget. `retry-after-ms` and
+are retried with exponential backoff (0.5s doubling to at most 5s, with
+jitter), within a 30 second budget. By default a request is tried up to
+3 times; change that with the `max_tries` argument. `retry-after-ms` and
 `retry-after` response headers are honored.
 
 ## Examples

@@ -9,7 +9,7 @@ An unofficial client for the TypeSafe System One API https://docs.typesafe.ai/ap
 
     <a class="navbar-brand me-2" href="../index.html">typesafer</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,7 +36,7 @@ An unofficial client for the TypeSafe System One API https://docs.typesafe.ai/ap
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>typesafer: Unofficial Client for the TypeSafe System One API</h1>
-      <small class="dont-index">Source: <a href="https://github.com/parmsam/typesafer/blob/v0.1.0/R/typesafer-package.R" class="external-link"><code>R/typesafer-package.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/parmsam/typesafer/blob/main/R/typesafer-package.R" class="external-link"><code>R/typesafer-package.R</code></a></small>
       <div class="d-none name"><code>typesafer-package.Rd</code></div>
     </div>
 
@@ -50,16 +50,26 @@ An unofficial client for the TypeSafe System One API https://docs.typesafe.ai/ap
     <h2 id="options">Options<a class="anchor" aria-label="anchor" href="#options"></a></h2>
 
 
-<ul><li><p><code>typesafer.timeout</code>: per-request timeout in seconds (default <code>10</code>).</p></li>
+<ul><li><p><code>typesafer.timeout</code>: default per-attempt timeout in seconds (default
+<code>10</code>); override per call with the <code>timeout</code> argument.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="environment-variables">Environment variables<a class="anchor" aria-label="anchor" href="#environment-variables"></a></h2>
 
 
 <ul><li><p><code>TYPESAFE_API_KEY</code>: API key used by <code><a href="ts_api_key.html">ts_api_key()</a></code>.</p></li>
+<li><p><code>TYPESAFE_DEFAULT_MODEL</code>: default model used by <code><a href="ts_default_model.html">ts_default_model()</a></code>
+(default <code>jev-latest</code>).</p></li>
 <li><p><code>TYPESAFE_BASE_URL</code>: override the API base URL
 (default <code>https://api.typesafe.ai</code>).</p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p>Useful links:</p><ul><li><p><a href="https://parmsam.github.io/typesafer/">https://parmsam.github.io/typesafer/</a></p></li>
+<li><p><a href="https://github.com/parmsam/typesafer" class="external-link">https://github.com/parmsam/typesafer</a></p></li>
+<li><p>Report bugs at <a href="https://github.com/parmsam/typesafer/issues" class="external-link">https://github.com/parmsam/typesafer/issues</a></p></li>
+</ul></div>
+    </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p><strong>Maintainer</strong>: Sam Parmar <a href="mailto:parmartsam@gmail.com">parmartsam@gmail.com</a></p>

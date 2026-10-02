@@ -19,6 +19,11 @@ returns a `ts_response` holding one answer per question:
 Confidence runs from 0 to 1 and summarizes how concentrated the
 probability distribution is. See <https://docs.typesafe.ai/confidence>.
 
+A `ts_response` also keeps the parsed response body in `@json`, so you
+can reach fields typesafer doesn't model yet (including answers of
+question types it doesn't recognize). Its structure follows the API and
+may change.
+
 ## Usage
 
 ``` r
@@ -37,7 +42,12 @@ ts_answer_score(
   confidence = numeric(0)
 )
 
-ts_response(answers = list(), model = character(0), usage = integer(0))
+ts_response(
+  answers = list(),
+  model = character(0),
+  usage = integer(0),
+  json = list()
+)
 ```
 
 ## Arguments
@@ -57,6 +67,10 @@ ts_response(answers = list(), model = character(0), usage = integer(0))
 - usage:
 
   A named integer vector with `input_tokens` and `output_tokens`.
+
+- json:
+
+  The parsed response body, as a list.
 
 ## Value
 

@@ -63,7 +63,7 @@ resp@answers$billing@prob
 resp@answers$tone@choice
 #> [1] "angry"
 resp@answers$urgency@score
-#> [1] 1.9
+#> [1] 1.89
 ```
 
 Printing the response gives a one-line summary per answer:
@@ -74,7 +74,21 @@ resp
 #> <ts_response> jev-1.13.0 | 346 input / 65 output tokens
 #>   billing noul   0.98
 #>   tone    choice "angry"    (confidence 0.97)
-#>   urgency score  1.90 [0-2] (confidence 0.85)
+#>   urgency score  1.89 [0-2] (confidence 0.83)
+```
+
+To work with the answers as data, convert the response to a one-row
+tibble. It has the same columns
+[`system_one_df()`](https://parmsam.github.io/typesafer/reference/system_one_df.md)
+adds, below:
+
+``` r
+
+as_tibble(resp, include_usage = TRUE)
+#> # A tibble: 1 × 7
+#>   billing tone  tone_confidence urgency urgency_confidence input_tokens output_tokens
+#>     <dbl> <chr>           <dbl>   <dbl>              <dbl>        <int>         <int>
+#> 1    0.98 angry            0.97    1.89               0.83          346            65
 ```
 
 Scores use the API’s 0-based scale. With levels
@@ -85,7 +99,7 @@ reports, so they may not reproduce `score` exactly:
 ``` r
 
 resp@answers$urgency@probabilities
-#> [1] 0.0 0.1 0.9
+#> [1] 0.00 0.11 0.89
 ```
 
 Choice options can carry descriptions, and instructions, options, and
@@ -143,22 +157,25 @@ system_one_df(
 #> # A tibble: 3 × 7
 #>      id text                      billing tone  tone_confidence urgency urgency_confidence
 #>   <int> <chr>                       <dbl> <chr>           <dbl>   <dbl>              <dbl>
-#> 1     1 Please cancel my subscri…    0.97 calm             0.95    1.16               0.54
-#> 2     2 How do I export my data …    0.05 calm             1       0.1                0.84
-#> 3     3 Your app crashed and I l…    0.05 angry            1       1.83               0.74
+#> 1     1 Please cancel my subscri…    0.97 calm             0.93    1.2                0.53
+#> 2     2 How do I export my data …    0.05 calm             1       0.07               0.9 
+#> 3     3 Your app crashed and I l…    0.05 angry            1       1.85               0.78
 ```
 
 Set `probs = TRUE` to also get each choice and score probability
-distribution as a list-column. Use `on_error = "continue"` to keep the
-rows that succeeded when some requests fail. Failed rows get `NA`
-answers and their errors go in an `.error` column.
+distribution as a list-column, and `include_usage = TRUE` to add token
+counts. Use `on_error = "continue"` to keep the rows that succeeded when
+some requests fail. Failed rows get `NA` answers and their errors go in
+an `.error` column.
 
 ## Errors and retries
 
 Requests that are rate limited (429), hit an overloaded server (529) or
-another 5xx, time out (408), or fail to connect are retried twice with
-exponential backoff. `retry-after` headers are respected. Errors are
-classed conditions that inherit from `typesafer_error`:
+another 5xx, time out (408), or fail to connect are retried with
+exponential backoff, up to 3 attempts by default. `retry-after` headers
+are respected. Use the `max_tries` and `timeout` arguments to change
+this for a single call. Errors are classed conditions that inherit from
+`typesafer_error`:
 
 | Class                        | When                                     |
 |------------------------------|------------------------------------------|
@@ -188,7 +205,7 @@ system_one("Hi", q = ts_noul("Is this a greeting?"), api_key = "not-a-real-key")
 #> ! TypeSafe API rejected the API key (HTTP 401).
 #> ✖ Cannot authenticate with the server. Please check your API key and try again.
 #> ℹ Check the key passed to `api_key`.
-#> ℹ Request ID: req_01a0fe0a634e74d391b9c51101629d32
+#> ℹ Request ID: req_01a0fe2b81f4766cba5f03818358ac9b
 ```
 
 Catch them by class:
@@ -219,7 +236,24 @@ ts_models()
 ```
 
 `jev-latest` is the default. Pin a versioned ID such as `jev-1.13.0` if
-you have tuned thresholds against a specific release.
+you have tuned thresholds against a specific release, either per call
+with `model = "jev-1.13.0"` or for every call with the
+`TYPESAFE_DEFAULT_MODEL` environment variable:
+
+``` r
+
+ts_default_model()
+#> [1] "jev-latest"
+```
+
+A response keeps the raw JSON it was built from in `@json`, for fields
+typesafer doesn’t model yet:
+
+``` r
+
+names(resp@json)
+#> [1] "model"   "answers" "usage"
+```
 
 ## Development
 

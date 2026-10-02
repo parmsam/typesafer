@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="index.html">typesafer</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,20 +115,27 @@
 <span><span class="va">resp</span><span class="op">@</span><span class="va">answers</span><span class="op">$</span><span class="va">tone</span><span class="op">@</span><span class="va">choice</span></span>
 <span><span class="co">#&gt; [1] "angry"</span></span>
 <span><span class="va">resp</span><span class="op">@</span><span class="va">answers</span><span class="op">$</span><span class="va">urgency</span><span class="op">@</span><span class="va">score</span></span>
-<span><span class="co">#&gt; [1] 1.9</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 1.89</span></span></code></pre></div>
 <p>Printing the response gives a one-line summary per answer:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">resp</span></span>
 <span><span class="co">#&gt; &lt;ts_response&gt; jev-1.13.0 | 346 input / 65 output tokens</span></span>
 <span><span class="co">#&gt;   billing noul   0.98</span></span>
 <span><span class="co">#&gt;   tone    choice "angry"    (confidence 0.97)</span></span>
-<span><span class="co">#&gt;   urgency score  1.90 [0-2] (confidence 0.85)</span></span></code></pre></div>
-<p>Scores use the API’s 0-based scale. With levels <code>c("low", "medium", "high")</code>, a score near 2 means <code>"high"</code>. The full distribution is ordered by level. The API rounds the probabilities it reports, so they may not reproduce <code>score</code> exactly:</p>
+<span><span class="co">#&gt;   urgency score  1.89 [0-2] (confidence 0.83)</span></span></code></pre></div>
+<p>To work with the answers as data, convert the response to a one-row tibble. It has the same columns <code><a href="reference/system_one_df.html">system_one_df()</a></code> adds, below:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">resp</span><span class="op">@</span><span class="va">answers</span><span class="op">$</span><span class="va">urgency</span><span class="op">@</span><span class="va">probabilities</span></span>
-<span><span class="co">#&gt; [1] 0.0 0.1 0.9</span></span></code></pre></div>
-<p>Choice options can carry descriptions, and instructions, options, and levels can all be structured lists:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">resp</span>, include_usage <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 1 × 7</span></span>
+<span><span class="co">#&gt;   billing tone  tone_confidence urgency urgency_confidence input_tokens output_tokens</span></span>
+<span><span class="co">#&gt;     &lt;dbl&gt; &lt;chr&gt;           &lt;dbl&gt;   &lt;dbl&gt;              &lt;dbl&gt;        &lt;int&gt;         &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1    0.98 angry            0.97    1.89               0.83          346            65</span></span></code></pre></div>
+<p>Scores use the API’s 0-based scale. With levels <code>c("low", "medium", "high")</code>, a score near 2 means <code>"high"</code>. The full distribution is ordered by level. The API rounds the probabilities it reports, so they may not reproduce <code>score</code> exactly:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">resp</span><span class="op">@</span><span class="va">answers</span><span class="op">$</span><span class="va">urgency</span><span class="op">@</span><span class="va">probabilities</span></span>
+<span><span class="co">#&gt; [1] 0.00 0.11 0.89</span></span></code></pre></div>
+<p>Choice options can carry descriptions, and instructions, options, and levels can all be structured lists:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ts_question.html">ts_choice</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Which team should handle this?"</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -154,7 +161,7 @@
 <h2 id="data-frames">Data frames<a class="anchor" aria-label="anchor" href="#data-frames"></a>
 </h2>
 <p><code><a href="reference/system_one_df.html">system_one_df()</a></code> sends one request per row, with every question batched into that request, and runs the requests in parallel. It returns the input as a tibble with answer columns added:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tickets</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>,</span>
 <span>  text <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -174,15 +181,15 @@
 <span><span class="co">#&gt; # A tibble: 3 × 7</span></span>
 <span><span class="co">#&gt;      id text                      billing tone  tone_confidence urgency urgency_confidence</span></span>
 <span><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;                       &lt;dbl&gt; &lt;chr&gt;           &lt;dbl&gt;   &lt;dbl&gt;              &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1     1 Please cancel my subscri…    0.97 calm             0.95    1.16               0.54</span></span>
-<span><span class="co">#&gt; 2     2 How do I export my data …    0.05 calm             1       0.1                0.84</span></span>
-<span><span class="co">#&gt; 3     3 Your app crashed and I l…    0.05 angry            1       1.83               0.74</span></span></code></pre></div>
-<p>Set <code>probs = TRUE</code> to also get each choice and score probability distribution as a list-column. Use <code>on_error = "continue"</code> to keep the rows that succeeded when some requests fail. Failed rows get <code>NA</code> answers and their errors go in an <code>.error</code> column.</p>
+<span><span class="co">#&gt; 1     1 Please cancel my subscri…    0.97 calm             0.93    1.2                0.53</span></span>
+<span><span class="co">#&gt; 2     2 How do I export my data …    0.05 calm             1       0.07               0.9 </span></span>
+<span><span class="co">#&gt; 3     3 Your app crashed and I l…    0.05 angry            1       1.85               0.78</span></span></code></pre></div>
+<p>Set <code>probs = TRUE</code> to also get each choice and score probability distribution as a list-column, and <code>include_usage = TRUE</code> to add token counts. Use <code>on_error = "continue"</code> to keep the rows that succeeded when some requests fail. Failed rows get <code>NA</code> answers and their errors go in an <code>.error</code> column.</p>
 </div>
 <div class="section level2">
 <h2 id="errors-and-retries">Errors and retries<a class="anchor" aria-label="anchor" href="#errors-and-retries"></a>
 </h2>
-<p>Requests that are rate limited (429), hit an overloaded server (529) or another 5xx, time out (408), or fail to connect are retried twice with exponential backoff. <code>retry-after</code> headers are respected. Errors are classed conditions that inherit from <code>typesafer_error</code>:</p>
+<p>Requests that are rate limited (429), hit an overloaded server (529) or another 5xx, time out (408), or fail to connect are retried with exponential backoff, up to 3 attempts by default. <code>retry-after</code> headers are respected. Use the <code>max_tries</code> and <code>timeout</code> arguments to change this for a single call. Errors are classed conditions that inherit from <code>typesafer_error</code>:</p>
 <table class="table">
 <colgroup>
 <col width="41%">
@@ -224,20 +231,20 @@
 </tbody>
 </table>
 <p>Invalid questions are caught before anything is sent:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ts_question.html">ts_score</a></span><span class="op">(</span><span class="st">"How urgent is this?"</span>, <span class="st">"high"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Error in `ts_score()`:</span></span>
 <span><span class="co">#&gt; ! `criteria` must have between 2 and 10 levels, not 1.</span></span></code></pre></div>
 <p>API errors carry the server’s message and request ID:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/system_one.html">system_one</a></span><span class="op">(</span><span class="st">"Hi"</span>, q <span class="op">=</span> <span class="fu"><a href="reference/ts_question.html">ts_noul</a></span><span class="op">(</span><span class="st">"Is this a greeting?"</span><span class="op">)</span>, api_key <span class="op">=</span> <span class="st">"not-a-real-key"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Error in `system_one()`:</span></span>
 <span><span class="co">#&gt; ! TypeSafe API rejected the API key (HTTP 401).</span></span>
 <span><span class="co">#&gt; ✖ Cannot authenticate with the server. Please check your API key and try again.</span></span>
 <span><span class="co">#&gt; ℹ Check the key passed to `api_key`.</span></span>
-<span><span class="co">#&gt; ℹ Request ID: req_01a0fe0a634e74d391b9c51101629d32</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ Request ID: req_01a0fe2b81f4766cba5f03818358ac9b</span></span></code></pre></div>
 <p>Catch them by class:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="reference/system_one.html">system_one</a></span><span class="op">(</span><span class="st">"Hi"</span>, q <span class="op">=</span> <span class="fu"><a href="reference/ts_question.html">ts_noul</a></span><span class="op">(</span><span class="st">"Is this a greeting?"</span><span class="op">)</span>, model <span class="op">=</span> <span class="st">"no-such-model"</span><span class="op">)</span>,</span>
 <span>  typesafer_error_rate_limit <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">err</span><span class="op">)</span> <span class="cn">NULL</span>,</span>
@@ -249,19 +256,26 @@
 <h2 id="models">Models<a class="anchor" aria-label="anchor" href="#models"></a>
 </h2>
 <p><code><a href="reference/ts_models.html">ts_models()</a></code> lists the models your account can use:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ts_models.html">ts_models</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 2 × 3</span></span>
 <span><span class="co">#&gt;   name        description                                                      release_date</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;       &lt;chr&gt;                                                            &lt;date&gt;      </span></span>
 <span><span class="co">#&gt; 1 jev-latest  The latest iteration of TypeSafe's System One Model: Jev         2026-09-10  </span></span>
 <span><span class="co">#&gt; 2 jev-preview A preview version of `jev-latest`: should be better in most ways 2026-09-10</span></span></code></pre></div>
-<p><code>jev-latest</code> is the default. Pin a versioned ID such as <code>jev-1.13.0</code> if you have tuned thresholds against a specific release.</p>
+<p><code>jev-latest</code> is the default. Pin a versioned ID such as <code>jev-1.13.0</code> if you have tuned thresholds against a specific release, either per call with <code>model = "jev-1.13.0"</code> or for every call with the <code>TYPESAFE_DEFAULT_MODEL</code> environment variable:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ts_default_model.html">ts_default_model</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "jev-latest"</span></span></code></pre></div>
+<p>A response keeps the raw JSON it was built from in <code>@json</code>, for fields typesafer doesn’t model yet:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">resp</span><span class="op">@</span><span class="va">json</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "model"   "answers" "usage"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="development">Development<a class="anchor" aria-label="anchor" href="#development"></a>
 </h2>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">test</span><span class="op">(</span><span class="op">)</span>   <span class="co"># uses recorded mocks; no API key needed</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">check</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><code>tests/testthat/test-live.R</code> also runs a few tests against the live API when <code>TYPESAFE_API_KEY</code> is set. They’re skipped on CRAN and CI.</p>

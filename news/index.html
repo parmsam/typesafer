@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">typesafer</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,9 +34,25 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/parmsam/typesafer/blob/v0.1.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/parmsam/typesafer/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="typesafer-020">typesafer 0.2.0<a class="anchor" aria-label="anchor" href="#typesafer-020"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-2-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-2-0"></a></h3>
+<ul><li><p><code><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble()</a></code> turns a <code>ts_response</code> into a one-row tibble with the same answer columns as <code><a href="../reference/system_one_df.html">system_one_df()</a></code>, including <code>probs = TRUE</code>.</p></li>
+<li><p><code><a href="../reference/system_one_df.html">system_one_df()</a></code> and <code><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble()</a></code> gain <code>include_usage</code> to add <code>input_tokens</code> and <code>output_tokens</code> columns.</p></li>
+<li><p>New <code><a href="../reference/ts_default_model.html">ts_default_model()</a></code> reads the <code>TYPESAFE_DEFAULT_MODEL</code> environment variable, matching the Python SDK, and is now the default <code>model</code> for <code><a href="../reference/system_one.html">system_one()</a></code> and <code><a href="../reference/system_one_df.html">system_one_df()</a></code>. It falls back to <code>"jev-latest"</code>.</p></li>
+<li><p><code><a href="../reference/system_one.html">system_one()</a></code>, <code><a href="../reference/system_one_df.html">system_one_df()</a></code>, and <code><a href="../reference/ts_models.html">ts_models()</a></code> gain <code>max_tries</code> and <code>timeout</code> arguments to control retries and the per-attempt timeout for a single call, like the Python SDK’s per-call retry and timeout overrides.</p></li>
+<li><p><code>ts_response</code> objects keep the parsed response body in <code>@json</code>, so fields and answer types typesafer doesn’t model yet are still reachable.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-2-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-2-0"></a></h3>
+<ul><li>
+<code><a href="../reference/system_one.html">system_one()</a></code> answers now follow the order the questions were asked in, rather than the order the API returns them.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="typesafer-010">typesafer 0.1.0<a class="anchor" aria-label="anchor" href="#typesafer-010"></a></h2>
 <p>First release of typesafer, an unofficial R client for the <a href="https://docs.typesafe.ai/api" class="external-link">TypeSafe System One API</a>.</p>

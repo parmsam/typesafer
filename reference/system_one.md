@@ -6,7 +6,14 @@ and answers every question against it.
 ## Usage
 
 ``` r
-system_one(state, ..., model = "jev-latest", api_key = ts_api_key())
+system_one(
+  state,
+  ...,
+  model = ts_default_model(),
+  max_tries = 3,
+  timeout = ts_timeout(),
+  api_key = ts_api_key()
+)
 ```
 
 ## Arguments
@@ -30,9 +37,24 @@ system_one(state, ..., model = "jev-latest", api_key = ts_api_key())
 
 - model:
 
-  The model to use. `"jev-latest"` is TypeSafe's flagship model; pin a
+  The model to use. Defaults to
+  [`ts_default_model()`](https://parmsam.github.io/typesafer/reference/ts_default_model.md),
+  which is `"jev-latest"`, TypeSafe's flagship model, unless the
+  `TYPESAFE_DEFAULT_MODEL` environment variable says otherwise. Pin a
   versioned ID such as `"jev-1.13.0"` to keep answers stable. See
   [`ts_models()`](https://parmsam.github.io/typesafer/reference/ts_models.md).
+
+- max_tries:
+
+  Maximum number of attempts per request, including the first. Requests
+  that fail with 408, 429, 5xx, or a connection failure are retried with
+  exponential backoff, within a 30 second retry budget. Use `1` to
+  disable retries.
+
+- timeout:
+
+  Timeout for each attempt, in seconds. Defaults to the
+  `typesafer.timeout` option, or 10.
 
 - api_key:
 
@@ -44,7 +66,9 @@ system_one(state, ..., model = "jev-latest", api_key = ts_api_key())
 A
 [ts_response](https://parmsam.github.io/typesafer/reference/ts_response.md).
 Answers are in `@answers`, named like the questions; the model that
-answered is in `@model`, and token counts are in `@usage`.
+answered is in `@model`, and token counts are in `@usage`. Use
+[as_tibble()](https://parmsam.github.io/typesafer/reference/as_tibble.ts_response.md)
+to get the answers as a one-row tibble.
 
 ## See also
 

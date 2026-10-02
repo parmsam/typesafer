@@ -1,5 +1,48 @@
 # Changelog
 
+## typesafer 0.2.0
+
+### New features
+
+- [`as_tibble()`](https://tibble.tidyverse.org/reference/as_tibble.html)
+  turns a `ts_response` into a one-row tibble with the same answer
+  columns as
+  [`system_one_df()`](https://parmsam.github.io/typesafer/reference/system_one_df.md),
+  including `probs = TRUE`.
+
+- [`system_one_df()`](https://parmsam.github.io/typesafer/reference/system_one_df.md)
+  and
+  [`as_tibble()`](https://tibble.tidyverse.org/reference/as_tibble.html)
+  gain `include_usage` to add `input_tokens` and `output_tokens`
+  columns.
+
+- New
+  [`ts_default_model()`](https://parmsam.github.io/typesafer/reference/ts_default_model.md)
+  reads the `TYPESAFE_DEFAULT_MODEL` environment variable, matching the
+  Python SDK, and is now the default `model` for
+  [`system_one()`](https://parmsam.github.io/typesafer/reference/system_one.md)
+  and
+  [`system_one_df()`](https://parmsam.github.io/typesafer/reference/system_one_df.md).
+  It falls back to `"jev-latest"`.
+
+- [`system_one()`](https://parmsam.github.io/typesafer/reference/system_one.md),
+  [`system_one_df()`](https://parmsam.github.io/typesafer/reference/system_one_df.md),
+  and
+  [`ts_models()`](https://parmsam.github.io/typesafer/reference/ts_models.md)
+  gain `max_tries` and `timeout` arguments to control retries and the
+  per-attempt timeout for a single call, like the Python SDK’s per-call
+  retry and timeout overrides.
+
+- `ts_response` objects keep the parsed response body in `@json`, so
+  fields and answer types typesafer doesn’t model yet are still
+  reachable.
+
+### Bug fixes
+
+- [`system_one()`](https://parmsam.github.io/typesafer/reference/system_one.md)
+  answers now follow the order the questions were asked in, rather than
+  the order the API returns them.
+
 ## typesafer 0.1.0
 
 First release of typesafer, an unofficial R client for the [TypeSafe

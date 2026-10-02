@@ -9,7 +9,7 @@ answers every question against it."><meta property="og:image" content="https://p
 
     <a class="navbar-brand me-2" href="../index.html">typesafer</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,7 +36,7 @@ answers every question against it."><meta property="og:image" content="https://p
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Ask System One questions about a state</h1>
-      <small class="dont-index">Source: <a href="https://github.com/parmsam/typesafer/blob/v0.1.0/R/system_one.R" class="external-link"><code>R/system_one.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/parmsam/typesafer/blob/main/R/system_one.R" class="external-link"><code>R/system_one.R</code></a></small>
       <div class="d-none name"><code>system_one.Rd</code></div>
     </div>
 
@@ -47,7 +47,14 @@ answers every question against it.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">system_one</span><span class="op">(</span><span class="va">state</span>, <span class="va">...</span>, model <span class="op">=</span> <span class="st">"jev-latest"</span>, api_key <span class="op">=</span> <span class="fu"><a href="ts_api_key.html">ts_api_key</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">system_one</span><span class="op">(</span></span>
+<span>  <span class="va">state</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  model <span class="op">=</span> <span class="fu"><a href="ts_default_model.html">ts_default_model</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  max_tries <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  timeout <span class="op">=</span> <span class="fu">ts_timeout</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  api_key <span class="op">=</span> <span class="fu"><a href="ts_api_key.html">ts_api_key</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -68,9 +75,23 @@ model. You can also splice a named list of questions with <code>!!!</code>.</p><
 
 
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
-<dd><p>The model to use. <code>"jev-latest"</code> is TypeSafe's flagship model;
-pin a versioned ID such as <code>"jev-1.13.0"</code> to keep answers stable. See
+<dd><p>The model to use. Defaults to <code><a href="ts_default_model.html">ts_default_model()</a></code>, which is
+<code>"jev-latest"</code>, TypeSafe's flagship model, unless the
+<code>TYPESAFE_DEFAULT_MODEL</code> environment variable says otherwise. Pin a
+versioned ID such as <code>"jev-1.13.0"</code> to keep answers stable. See
 <code><a href="ts_models.html">ts_models()</a></code>.</p></dd>
+
+
+<dt id="arg-max-tries">max_tries<a class="anchor" aria-label="anchor" href="#arg-max-tries"></a></dt>
+<dd><p>Maximum number of attempts per request, including the
+first. Requests that fail with 408, 429, 5xx, or a connection failure are
+retried with exponential backoff, within a 30 second retry budget. Use
+<code>1</code> to disable retries.</p></dd>
+
+
+<dt id="arg-timeout">timeout<a class="anchor" aria-label="anchor" href="#arg-timeout"></a></dt>
+<dd><p>Timeout for each attempt, in seconds. Defaults to the
+<code>typesafer.timeout</code> option, or 10.</p></dd>
 
 
 <dt id="arg-api-key">api_key<a class="anchor" aria-label="anchor" href="#arg-api-key"></a></dt>
@@ -81,7 +102,8 @@ pin a versioned ID such as <code>"jev-1.13.0"</code> to keep answers stable. See
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <a href="ts_response.html">ts_response</a>. Answers are in <code>@answers</code>, named like the
 questions; the model that answered is in <code>@model</code>, and token counts are
-in <code>@usage</code>.</p>
+in <code>@usage</code>. Use <a href="as_tibble.ts_response.html">as_tibble()</a> to get the answers
+as a one-row tibble.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

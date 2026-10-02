@@ -8,10 +8,22 @@ whether or not they're listed. See <https://docs.typesafe.ai/models>.
 ## Usage
 
 ``` r
-ts_models(api_key = ts_api_key())
+ts_models(max_tries = 3, timeout = ts_timeout(), api_key = ts_api_key())
 ```
 
 ## Arguments
+
+- max_tries:
+
+  Maximum number of attempts per request, including the first. Requests
+  that fail with 408, 429, 5xx, or a connection failure are retried with
+  exponential backoff, within a 30 second retry budget. Use `1` to
+  disable retries.
+
+- timeout:
+
+  Timeout for each attempt, in seconds. Defaults to the
+  `typesafer.timeout` option, or 10.
 
 - api_key:
 
