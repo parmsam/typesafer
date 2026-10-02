@@ -1,24 +1,28 @@
-# typesafer (development version)
+# typesafer 0.2.0
 
-* `system_one()` answers now follow the order the questions were asked in,
-  rather than the order the API returns them.
-
-* `system_one_df()` and `as_tibble()` gain `include_usage` to add
-  `input_tokens` and `output_tokens` columns.
-
-* `system_one()`, `system_one_df()`, and `ts_models()` gain `max_tries` and
-  `timeout` arguments to control retries and the per-attempt timeout for a
-  single call, like the Python SDK's per-call retry and timeout overrides.
+## New features
 
 * `as_tibble()` turns a `ts_response` into a one-row tibble with the same
   answer columns as `system_one_df()`, including `probs = TRUE`.
+
+* `system_one_df()` and `as_tibble()` gain `include_usage` to add
+  `input_tokens` and `output_tokens` columns.
 
 * New `ts_default_model()` reads the `TYPESAFE_DEFAULT_MODEL` environment
   variable, matching the Python SDK, and is now the default `model` for
   `system_one()` and `system_one_df()`. It falls back to `"jev-latest"`.
 
+* `system_one()`, `system_one_df()`, and `ts_models()` gain `max_tries` and
+  `timeout` arguments to control retries and the per-attempt timeout for a
+  single call, like the Python SDK's per-call retry and timeout overrides.
+
 * `ts_response` objects keep the parsed response body in `@json`, so fields
   and answer types typesafer doesn't model yet are still reachable.
+
+## Bug fixes
+
+* `system_one()` answers now follow the order the questions were asked in,
+  rather than the order the API returns them.
 
 # typesafer 0.1.0
 
