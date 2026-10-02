@@ -7,6 +7,7 @@
     Condition
       Warning:
       Ignoring answer with unrecognized type: "b".
+      i The raw answer is still available in the response's @json.
 
 # responses and answers print
 

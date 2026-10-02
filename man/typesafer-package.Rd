@@ -26,6 +26,15 @@ An unofficial client for the TypeSafe System One API \url{https://docs.typesafe.
 }
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://parmsam.github.io/typesafer/}
+  \item \url{https://github.com/parmsam/typesafer}
+  \item Report bugs at \url{https://github.com/parmsam/typesafer/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Sam Parmar \email{parmartsam@gmail.com}
 

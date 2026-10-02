@@ -65,6 +65,20 @@ test_that("unknown answer types are dropped with a warning", {
     ))
   )
   expect_named(resp@answers, "a")
+  expect_equal(resp@json$answers$b, list(type = "ranking", ranking = list("x")))
+})
+
+test_that("the parsed body is kept in @json", {
+  body <- list(
+    model = "jev-1.13.0",
+    answers = list(q = list(type = "noul", noul = 0.5, extra = "new field")),
+    usage = list(input_tokens = 1, output_tokens = 1),
+    future_top_level = TRUE
+  )
+  resp <- parse_response(body)
+  expect_identical(resp@json, body)
+  expect_equal(resp@json$answers$q$extra, "new field")
+  expect_equal(ts_response(model = "m", usage = c(input_tokens = 1L, output_tokens = 1L))@json, list())
 })
 
 test_that("answer validators reject impossible values", {

@@ -1,5 +1,8 @@
 # typesafer (development version)
 
+* `ts_response` objects keep the parsed response body in `@json`, so fields
+  and answer types typesafer doesn't model yet are still reachable.
+
 # typesafer 0.1.0
 
 First release of typesafer, an unofficial R client for the

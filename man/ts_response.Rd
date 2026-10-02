@@ -22,7 +22,12 @@ ts_answer_score(
   confidence = numeric(0)
 )
 
-ts_response(answers = list(), model = character(0), usage = integer(0))
+ts_response(
+  answers = list(),
+  model = character(0),
+  usage = integer(0),
+  json = list()
+)
 }
 \arguments{
 \item{prob, choice, probabilities, score, legend, confidence}{Answer fields;
@@ -34,6 +39,8 @@ see Description.}
 
 \item{usage}{A named integer vector with \code{input_tokens} and
 \code{output_tokens}.}
+
+\item{json}{The parsed response body, as a list.}
 }
 \value{
 An S7 object.
@@ -55,6 +62,10 @@ in the same order; and \verb{@confidence}.
 
 Confidence runs from 0 to 1 and summarizes how concentrated the probability
 distribution is. See \url{https://docs.typesafe.ai/confidence}.
+
+A \code{ts_response} also keeps the parsed response body in \verb{@json}, so you can
+reach fields typesafer doesn't model yet (including answers of question
+types it doesn't recognize). Its structure follows the API and may change.
 }
 \examples{
 ts_response(

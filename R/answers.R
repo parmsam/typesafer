@@ -17,10 +17,15 @@
 #' Confidence runs from 0 to 1 and summarizes how concentrated the probability
 #' distribution is. See <https://docs.typesafe.ai/confidence>.
 #'
+#' A `ts_response` also keeps the parsed response body in `@json`, so you can
+#' reach fields typesafer doesn't model yet (including answers of question
+#' types it doesn't recognize). Its structure follows the API and may change.
+#'
 #' @param answers A named list of answers.
 #' @param model The model that answered, e.g. `"jev-1.13.0"`.
 #' @param usage A named integer vector with `input_tokens` and
 #'   `output_tokens`.
+#' @param json The parsed response body, as a list.
 #' @param prob,choice,probabilities,score,legend,confidence Answer fields;
 #'   see Description.
 #' @returns An S7 object.
@@ -111,7 +116,8 @@ ts_response <- S7::new_class(
   properties = list(
     answers = S7::class_list,
     model = S7::class_character,
-    usage = S7::class_integer
+    usage = S7::class_integer,
+    json = S7::class_list
   ),
   validator = function(self) {
     if (length(self@answers) > 0 && !rlang::is_named(self@answers)) {
@@ -139,7 +145,10 @@ parse_response <- function(body, call = rlang::caller_env()) {
   unknown <- vapply(parsed, is.null, logical(1))
   if (any(unknown)) {
     cli::cli_warn(
-      "Ignoring answer{?s} with unrecognized type: {.val {names(answers)[unknown]}}.",
+      c(
+        "Ignoring answer{?s} with unrecognized type: {.val {names(answers)[unknown]}}.",
+        i = "The raw answer is still available in the response's {.field @json}."
+      ),
       call = call
     )
   }
@@ -150,7 +159,8 @@ parse_response <- function(body, call = rlang::caller_env()) {
     usage = c(
       input_tokens = as.integer(usage$input_tokens %||% NA_integer_),
       output_tokens = as.integer(usage$output_tokens %||% NA_integer_)
-    )
+    ),
+    json = body
   )
 }
 
