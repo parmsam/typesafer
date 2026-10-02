@@ -53,6 +53,15 @@ answer_columns <- function(name, type, results, probs) {
   cols
 }
 
+usage_col_names <- c("input_tokens", "output_tokens")
+
+usage_columns <- function(results) {
+  token <- function(field) {
+    vapply(results, function(r) if (is.null(r)) NA_integer_ else r@usage[[field]], integer(1))
+  }
+  list(input_tokens = token("input_tokens"), output_tokens = token("output_tokens"))
+}
+
 #' Convert a response to a tibble
 #'
 #' Turns a [ts_response] into a one-row tibble with the same answer columns
@@ -63,6 +72,8 @@ answer_columns <- function(name, type, results, probs) {
 #' @param ... Unused.
 #' @param probs If `TRUE`, also add a `<name>_probs` list-column for each
 #'   choice and score answer.
+#' @param include_usage If `TRUE`, also add `input_tokens` and
+#'   `output_tokens` columns.
 #' @returns A one-row tibble.
 #' @name as_tibble.ts_response
 #' @examples
@@ -79,19 +90,25 @@ answer_columns <- function(name, type, results, probs) {
 #'   usage = c(input_tokens = 318L, output_tokens = 34L)
 #' )
 #' as_tibble(resp)
-#' as_tibble(resp, probs = TRUE)
+#' as_tibble(resp, probs = TRUE, include_usage = TRUE)
 NULL
 
 tibble_as_tibble <- S7::new_external_generic("tibble", "as_tibble", "x")
 
-S7::method(tibble_as_tibble, ts_response) <- function(x, ..., probs = FALSE) {
+S7::method(tibble_as_tibble, ts_response) <- function(x, ..., probs = FALSE, include_usage = FALSE) {
   if (!rlang::is_bool(probs)) {
     abort_input("{.arg probs} must be `TRUE` or `FALSE`.")
+  }
+  if (!rlang::is_bool(include_usage)) {
+    abort_input("{.arg include_usage} must be `TRUE` or `FALSE`.")
   }
   types <- vapply(x@answers, answer_type, character(1))
   cols <- list()
   for (name in names(types)) {
     cols <- c(cols, answer_columns(name, types[[name]], list(x), probs))
+  }
+  if (include_usage) {
+    cols <- c(cols, usage_columns(list(x)))
   }
   tibble::new_tibble(cols, nrow = 1L)
 }

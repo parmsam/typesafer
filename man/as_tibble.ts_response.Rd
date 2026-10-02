@@ -10,6 +10,9 @@
 
 \item{probs}{If \code{TRUE}, also add a \verb{<name>_probs} list-column for each
 choice and score answer.}
+
+\item{include_usage}{If \code{TRUE}, also add \code{input_tokens} and
+\code{output_tokens} columns.}
 }
 \value{
 A one-row tibble.
@@ -33,5 +36,5 @@ resp <- ts_response(
   usage = c(input_tokens = 318L, output_tokens = 34L)
 )
 as_tibble(resp)
-as_tibble(resp, probs = TRUE)
+as_tibble(resp, probs = TRUE, include_usage = TRUE)
 }

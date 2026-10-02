@@ -14,6 +14,8 @@
 #' @inheritParams system_one
 #' @param probs If `TRUE`, also add a `<name>_probs` list-column for each
 #'   choice and score question holding its full probability distribution.
+#' @param include_usage If `TRUE`, also add `input_tokens` and `output_tokens`
+#'   columns with each row's token usage (`NA` for failed rows).
 #' @param max_active Maximum number of requests in flight at once.
 #' @param on_error What to do when a row's request fails after retries:
 #'   * `"stop"` (default): stop sending requests and raise the error for the
@@ -28,6 +30,9 @@
 #'     `name_probs` (named double vectors) when `probs = TRUE`.
 #'   * score: `name` (0-based expected level) and `name_confidence`, plus
 #'     `name_probs` (double vectors ordered by level) when `probs = TRUE`.
+#'
+#'   Plus `input_tokens` and `output_tokens` when `include_usage = TRUE`, and
+#'   `.error` when `on_error = "continue"`.
 #' @seealso [system_one()] for a single request.
 #' @export
 #' @examples
@@ -53,6 +58,7 @@ system_one_df <- function(.data,
                           ...,
                           model = ts_default_model(),
                           probs = FALSE,
+                          include_usage = FALSE,
                           max_active = 10,
                           on_error = c("stop", "continue"),
                           max_tries = 3,
@@ -70,6 +76,9 @@ system_one_df <- function(.data,
   if (!rlang::is_bool(probs)) {
     abort_input("{.arg probs} must be `TRUE` or `FALSE`.")
   }
+  if (!rlang::is_bool(include_usage)) {
+    abort_input("{.arg include_usage} must be `TRUE` or `FALSE`.")
+  }
   if (!rlang::is_scalar_integerish(max_active) || is.na(max_active) || max_active < 1) {
     abort_input("{.arg max_active} must be a whole number of at least 1.")
   }
@@ -82,6 +91,9 @@ system_one_df <- function(.data,
 
   types <- vapply(questions, question_type, character(1))
   new_cols <- output_col_names(types, probs)
+  if (include_usage) {
+    new_cols <- c(new_cols, usage_col_names)
+  }
   if (on_error == "continue") {
     new_cols <- c(new_cols, ".error")
   }
@@ -130,6 +142,11 @@ system_one_df <- function(.data,
     for (col in names(cols)) {
       out[[col]] <- cols[[col]]
     }
+  }
+  if (include_usage) {
+    usage <- usage_columns(results)
+    out$input_tokens <- usage$input_tokens
+    out$output_tokens <- usage$output_tokens
   }
 
   if (on_error == "continue") {

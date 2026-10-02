@@ -1,5 +1,8 @@
 # typesafer (development version)
 
+* `system_one_df()` and `as_tibble()` gain `include_usage` to add
+  `input_tokens` and `output_tokens` columns.
+
 * `system_one()`, `system_one_df()`, and `ts_models()` gain `max_tries` and
   `timeout` arguments to control retries and the per-attempt timeout for a
   single call, like the Python SDK's per-call retry and timeout overrides.

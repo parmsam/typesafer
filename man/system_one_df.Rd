@@ -10,6 +10,7 @@ system_one_df(
   ...,
   model = ts_default_model(),
   probs = FALSE,
+  include_usage = FALSE,
   max_active = 10,
   on_error = c("stop", "continue"),
   max_tries = 3,
@@ -38,6 +39,9 @@ versioned ID such as \code{"jev-1.13.0"} to keep answers stable. See
 
 \item{probs}{If \code{TRUE}, also add a \verb{<name>_probs} list-column for each
 choice and score question holding its full probability distribution.}
+
+\item{include_usage}{If \code{TRUE}, also add \code{input_tokens} and \code{output_tokens}
+columns with each row's token usage (\code{NA} for failed rows).}
 
 \item{max_active}{Maximum number of requests in flight at once.}
 
@@ -70,6 +74,9 @@ retried with exponential backoff, within a 30 second retry budget. Use
 \item score: \code{name} (0-based expected level) and \code{name_confidence}, plus
 \code{name_probs} (double vectors ordered by level) when \code{probs = TRUE}.
 }
+
+Plus \code{input_tokens} and \code{output_tokens} when \code{include_usage = TRUE}, and
+\code{.error} when \code{on_error = "continue"}.
 }
 \description{
 Sends one request per row, with every question batched into that request,
