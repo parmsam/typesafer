@@ -41,6 +41,15 @@ Install the development version from GitHub:
 pak::pak("parmsam/typesafer")
 ```
 
+## Documentation
+
+The [package website](https://parmsam.github.io/typesafer/) has the full
+function reference. It’s also published as Markdown for LLMs and coding
+agents: [llms.txt](https://parmsam.github.io/typesafer/llms.txt)
+combines this README with an index of the reference, and every page has
+a `.md` version (for example,
+[`system_one.md`](https://parmsam.github.io/typesafer/reference/system_one.md)).
+
 ## Authentication
 
 Get an API key from TypeSafe and set it in the `TYPESAFE_API_KEY` environment
