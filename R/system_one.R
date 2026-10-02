@@ -56,7 +56,7 @@ system_one <- function(state,
 
   req <- ts_request("v1/systemone", api_key, max_tries = max_tries, timeout = timeout)
   req <- ts_req_body(req, system_one_body(state, questions, model))
-  parse_response(ts_perform(req, api_key = api_key))
+  parse_response(ts_perform(req, api_key = api_key), order = names(questions))
 }
 
 system_one_body <- function(state, questions, model) {

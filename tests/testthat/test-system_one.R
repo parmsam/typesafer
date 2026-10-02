@@ -146,3 +146,19 @@ test_that("arguments are validated before any request", {
   expect_error(system_one(a = ts_noul("?")), class = "typesafer_error_input")
   expect_snapshot(system_one("x", a = ts_noul("?"), b = 1), error = TRUE)
 })
+
+test_that("answers follow question order, not the API's order", {
+  local_ts_env()
+  httr2::local_mocked_responses(function(req) {
+    json_response(body = ok_body(list(
+      c = list(type = "noul", noul = 0.3),
+      a = list(type = "noul", noul = 0.1),
+      b = list(type = "noul", noul = 0.2)
+    )))
+  })
+  resp <- system_one("x", a = ts_noul("?"), b = ts_noul("?"), c = ts_noul("?"))
+  expect_named(resp@answers, c("a", "b", "c"))
+  expect_named(as_tibble(resp), c("a", "b", "c"))
+  # The raw body keeps the API's order.
+  expect_named(resp@json$answers, c("c", "a", "b"))
+})

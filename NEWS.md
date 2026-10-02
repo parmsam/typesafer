@@ -1,5 +1,8 @@
 # typesafer (development version)
 
+* `system_one()` answers now follow the order the questions were asked in,
+  rather than the order the API returns them.
+
 * `system_one_df()` and `as_tibble()` gain `include_usage` to add
   `input_tokens` and `output_tokens` columns.
 

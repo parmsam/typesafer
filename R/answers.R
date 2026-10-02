@@ -139,8 +139,13 @@ ts_response <- S7::new_class(
 
 # Parsing ---------------------------------------------------------------------
 
-parse_response <- function(body, call = rlang::caller_env()) {
+# `order` is the question names: answers come back in the API's order, so put
+# them in the order the questions were asked (unexpected extras go last).
+parse_response <- function(body, order = NULL, call = rlang::caller_env()) {
   answers <- body$answers %||% list()
+  if (!is.null(order)) {
+    answers <- answers[c(intersect(order, names(answers)), setdiff(names(answers), order))]
+  }
   parsed <- lapply(answers, parse_answer)
   unknown <- vapply(parsed, is.null, logical(1))
   if (any(unknown)) {

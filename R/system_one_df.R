@@ -122,7 +122,8 @@ system_one_df <- function(.data,
     for (i in seq_len(n)) {
       r <- resps[[i]]
       if (inherits(r, "httr2_response")) {
-        results[[i]] <- parse_response(httr2::resp_body_json(r, simplifyVector = FALSE), call = call)
+        body <- httr2::resp_body_json(r, simplifyVector = FALSE)
+        results[[i]] <- parse_response(body, order = names(questions), call = call)
       } else if (inherits(r, "error")) {
         errors[[i]] <- as_typesafer_cnd(r, api_key = api_key, call = call)
       }
