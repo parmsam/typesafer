@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1386" viewBox="0 0 1200 1386">
+  <!-- typesafer hex sticker. Render with data-raw/hex.R. -->
+  <defs>
+    <clipPath id="hex">
+      <polygon points="600,23 1180.2,358 1180.2,1028 600,1363 19.8,1028 19.8,358"/>
+    </clipPath>
+  </defs>
+
+  <!-- Hexagon body -->
+  <polygon points="600,23 1180.2,358 1180.2,1028 600,1363 19.8,1028 19.8,358"
+           fill="#14213d"/>
+
+  <g clip-path="url(#hex)">
+    <!-- Soft glow behind the chart -->
+    <circle cx="600" cy="600" r="420" fill="#1d2f57"/>
+
+    <!-- JSON braces: typed, structured answers -->
+    <text x="215" y="790" font-family="Menlo, DejaVu Sans Mono, monospace"
+          font-size="440" fill="#e5e7eb" fill-opacity="0.9">{</text>
+    <text x="725" y="790" font-family="Menlo, DejaVu Sans Mono, monospace"
+          font-size="440" fill="#e5e7eb" fill-opacity="0.9">}</text>
+
+    <!-- Probability distribution; the chosen answer is highlighted -->
+    <rect x="390" y="690" width="70" height="80"  rx="12" fill="#6b7a99"/>
+    <rect x="474" y="580" width="70" height="190" rx="12" fill="#6b7a99"/>
+    <rect x="558" y="400" width="84" height="370" rx="12" fill="#fca311"/>
+    <rect x="656" y="620" width="70" height="150" rx="12" fill="#6b7a99"/>
+    <rect x="740" y="715" width="70" height="55"  rx="12" fill="#6b7a99"/>
+
+    <!-- Probability of the chosen answer -->
+    <text x="600" y="360" text-anchor="middle"
+          font-family="Menlo, DejaVu Sans Mono, monospace" font-weight="bold"
+          font-size="96" fill="#fca311">0.92</text>
+
+    <!-- Baseline -->
+    <rect x="370" y="784" width="460" height="10" rx="5" fill="#e5e7eb"/>
+
+    <!-- Package name -->
+    <text x="600" y="1060" text-anchor="middle"
+          font-family="Menlo, DejaVu Sans Mono, monospace" font-weight="bold"
+          font-size="148" fill="#ffffff">typesafer</text>
+  </g>
+
+  <!-- Border -->
+  <polygon points="600,23 1180.2,358 1180.2,1028 600,1363 19.8,1028 19.8,358"
+           fill="none" stroke="#fca311" stroke-width="40" stroke-linejoin="round"/>
+</svg>

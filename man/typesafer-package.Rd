@@ -6,6 +6,8 @@
 \alias{typesafer-package}
 \title{typesafer: Unofficial Client for the TypeSafe System One API}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 An unofficial client for the TypeSafe System One API \url{https://docs.typesafe.ai/api}. Ask typed yes/no (noul), choice, and score questions about text or structured state and get calibrated probabilities back as typed R objects or tidy data frames.
 }
 \section{Options}{

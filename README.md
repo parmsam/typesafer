@@ -4,12 +4,18 @@
      `quarto render README.qmd` (needs TYPESAFE_API_KEY: the examples call the
      live API). -->
 
-# typesafer
+# typesafer <a href="https://github.com/parmsam/typesafer"><img src="man/figures/logo.png" align="right" height="240" alt="The package's hex sticker: a navy hexagon with an amber border. Inside, a small bar chart of probabilities sits between curly JSON braces, with the tallest bar highlighted in amber and labelled 0.92. The word typesafer is set in white monospace below." /></a>
 
 <!-- badges: start -->
 
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/parmsam/typesafer/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/parmsam/typesafer/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
+
+> This package is experimental.
+
+typesafer brings TypeSafe’s typed, calibrated decisions to R.
 
 typesafer is an **unofficial** R client for the [TypeSafe System One
 API](https://docs.typesafe.ai/api). You send a piece of state (text or
@@ -73,7 +79,7 @@ resp
 #> <ts_response> jev-1.13.0 | 346 input / 65 output tokens
 #>   billing noul   0.98
 #>   tone    choice "angry"    (confidence 0.96)
-#>   urgency score  1.89 [0-2] (confidence 0.83)
+#>   urgency score  1.89 [0-2] (confidence 0.84)
 ```
 
 Scores use the API’s 0-based scale. With levels
@@ -82,7 +88,7 @@ distribution is ordered by level:
 
 ``` r
 resp@answers$urgency@probabilities
-#> [1] 0.00 0.11 0.89
+#> [1] 0.0 0.1 0.9
 ```
 
 Choice options can carry descriptions, and instructions, options, and
@@ -137,9 +143,9 @@ system_one_df(
 #> # A tibble: 3 × 7
 #>      id text                      billing tone  tone_confidence urgency urgency_confidence
 #>   <int> <chr>                       <dbl> <chr>           <dbl>   <dbl>              <dbl>
-#> 1     1 I was charged twice. Ple…    0.98 angry            0.96    1.89               0.84
-#> 2     2 How do I export my data …    0.05 calm             1       0.05               0.92
-#> 3     3 Your app crashed and I l…    0.05 angry            1       1.87               0.8
+#> 1     1 I was charged twice. Ple…    0.98 angry            0.97    1.9                0.85
+#> 2     2 How do I export my data …    0.05 calm             1       0.06               0.9 
+#> 3     3 Your app crashed and I l…    0.05 angry            1       1.86               0.78
 ```
 
 Set `probs = TRUE` to also get each choice and score probability
@@ -180,7 +186,7 @@ system_one("Hi", q = ts_noul("Is this a greeting?"), api_key = "not-a-real-key")
 #> ! TypeSafe API rejected the API key (HTTP 401).
 #> ✖ Cannot authenticate with the server. Please check your API key and try again.
 #> ℹ Check the key in the `TYPESAFE_API_KEY` environment variable.
-#> ℹ Request ID: req_01a0fe01b8cc79b2a6df38ddae67453e
+#> ℹ Request ID: req_01a0fe0475cc7c8eb7f51134dfdb438d
 ```
 
 Catch them by class:

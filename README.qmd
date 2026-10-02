@@ -17,11 +17,16 @@ pkgload::load_all(quiet = TRUE)
 options(width = 90)
 ```
 
-# typesafer
+# typesafer <a href="https://github.com/parmsam/typesafer"><img src="man/figures/logo.png" align="right" height="240" alt="The package's hex sticker: a navy hexagon with an amber border. Inside, a small bar chart of probabilities sits between curly JSON braces, with the tallest bar highlighted in amber and labelled 0.92. The word typesafer is set in white monospace below." /></a>
 
 <!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/parmsam/typesafer/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/parmsam/typesafer/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
+
+> This package is experimental.
+
+typesafer brings TypeSafe's typed, calibrated decisions to R.
 
 typesafer is an **unofficial** R client for the
 [TypeSafe System One API](https://docs.typesafe.ai/api). You send a piece of
