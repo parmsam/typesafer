@@ -20,7 +20,9 @@ reference:
 - title: Question types
   contents: ts_question
 - title: Answers
-  contents: ts_response
+  contents:
+  - ts_response
+  - as_tibble.ts_response
 - title: Models and authentication
   contents:
   - ts_models

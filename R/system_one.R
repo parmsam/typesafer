@@ -18,7 +18,8 @@
 #' @param api_key API key; defaults to [ts_api_key()].
 #' @returns A [ts_response]. Answers are in `@answers`, named like the
 #'   questions; the model that answered is in `@model`, and token counts are
-#'   in `@usage`.
+#'   in `@usage`. Use [as_tibble()][as_tibble.ts_response] to get the answers
+#'   as a one-row tibble.
 #' @seealso [system_one_df()] to ask the same questions about every row of a
 #'   data frame. [typesafer_error] for the errors this can raise.
 #' @export

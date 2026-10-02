@@ -1,5 +1,8 @@
 # typesafer (development version)
 
+* `as_tibble()` turns a `ts_response` into a one-row tibble with the same
+  answer columns as `system_one_df()`, including `probs = TRUE`.
+
 * New `ts_default_model()` reads the `TYPESAFE_DEFAULT_MODEL` environment
   variable, matching the Python SDK, and is now the default `model` for
   `system_one()` and `system_one_df()`. It falls back to `"jev-latest"`.

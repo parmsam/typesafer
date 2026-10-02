@@ -27,7 +27,8 @@ versioned ID such as \code{"jev-1.13.0"} to keep answers stable. See
 \value{
 A \link{ts_response}. Answers are in \verb{@answers}, named like the
 questions; the model that answered is in \verb{@model}, and token counts are
-in \verb{@usage}.
+in \verb{@usage}. Use \link[=as_tibble.ts_response]{as_tibble()} to get the answers
+as a one-row tibble.
 }
 \description{
 Sends one request to \code{POST /v1/systemone}: the model reads \code{state} once and

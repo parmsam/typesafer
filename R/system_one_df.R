@@ -77,7 +77,8 @@ system_one_df <- function(.data,
   n <- nrow(out)
   states <- normalize_states(rlang::eval_tidy(state, out), n)
 
-  new_cols <- output_col_names(questions, probs)
+  types <- vapply(questions, question_type, character(1))
+  new_cols <- output_col_names(types, probs)
   if (on_error == "continue") {
     new_cols <- c(new_cols, ".error")
   }
@@ -121,7 +122,7 @@ system_one_df <- function(.data,
   }
 
   for (name in names(questions)) {
-    cols <- answer_columns(name, questions[[name]], results, probs)
+    cols <- answer_columns(name, types[[name]], results, probs)
     for (col in names(cols)) {
       out[[col]] <- cols[[col]]
     }
@@ -170,42 +171,4 @@ normalize_states <- function(states, n, call = rlang::caller_env()) {
     "{.arg state} must evaluate to a character vector or a list, not {.obj_type_friendly {states}}.",
     call = call
   )
-}
-
-output_col_names <- function(questions, probs) {
-  unlist(lapply(names(questions), function(name) {
-    q <- questions[[name]]
-    if (S7::S7_inherits(q, ts_noul)) {
-      name
-    } else {
-      c(name, paste0(name, "_confidence"), if (probs) paste0(name, "_probs"))
-    }
-  }))
-}
-
-answer_columns <- function(name, question, results, probs) {
-  answers <- lapply(results, function(r) if (!is.null(r)) r@answers[[name]])
-  field <- function(prop, type) {
-    vapply(answers, function(a) if (is.null(a)) type[NA_integer_] else S7::prop(a, prop), type)
-  }
-  prob_list <- function() {
-    lapply(answers, function(a) if (!is.null(a)) a@probabilities)
-  }
-
-  if (S7::S7_inherits(question, ts_noul)) {
-    cols <- list(field("prob", double(1)))
-    names(cols) <- name
-    return(cols)
-  }
-  value <- if (S7::S7_inherits(question, ts_choice)) {
-    field("choice", character(1))
-  } else {
-    field("score", double(1))
-  }
-  cols <- list(value, field("confidence", double(1)))
-  names(cols) <- c(name, paste0(name, "_confidence"))
-  if (probs) {
-    cols[[paste0(name, "_probs")]] <- prob_list()
-  }
-  cols
 }
