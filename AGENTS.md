@@ -135,6 +135,20 @@ so tests can assert the exact bytes.
 - **Snapshots:** error and print output are snapshot-tested. Review
   changes in `_snaps/` rather than accepting them blindly.
 
+## Secrets
+
+- Never put `TYPESAFE_API_KEY`, or any part of it, in a shell command, a
+  command-line argument, or printed output. Tools echo commands back.
+  For example, R’s [`system2()`](https://rdrr.io/r/base/system2.html)
+  prints the whole command line in a warning when the command exits with
+  a non-zero status.
+- To check whether the key appears somewhere (git history, a rendered
+  README, logs), read the text into R and compare in-process, printing
+  only a boolean or a count:
+  `grepl(Sys.getenv("TYPESAFE_API_KEY"), text, fixed = TRUE)`.
+- After rendering `README.qmd`, confirm that `README.md` doesn’t contain
+  the key before committing.
+
 ## Workflow
 
 - Make small commits, one per logical unit, with the code, its tests and

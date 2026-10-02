@@ -150,6 +150,12 @@ The server’s error body is in the <code>response_body</code> field, because rl
 <strong>Snapshots:</strong> error and print output are snapshot-tested. Review changes in <code>_snaps/</code> rather than accepting them blindly.</li>
 </ul></div>
 <div class="section level2">
+<h2 id="secrets">Secrets<a class="anchor" aria-label="anchor" href="#secrets"></a></h2>
+<ul><li>Never put <code>TYPESAFE_API_KEY</code>, or any part of it, in a shell command, a command-line argument, or printed output. Tools echo commands back. For example, R’s <code><a href="https://rdrr.io/r/base/system2.html" class="external-link">system2()</a></code> prints the whole command line in a warning when the command exits with a non-zero status.</li>
+<li>To check whether the key appears somewhere (git history, a rendered README, logs), read the text into R and compare in-process, printing only a boolean or a count: <code>grepl(Sys.getenv("TYPESAFE_API_KEY"), text, fixed = TRUE)</code>.</li>
+<li>After rendering <code>README.qmd</code>, confirm that <code>README.md</code> doesn’t contain the key before committing.</li>
+</ul></div>
+<div class="section level2">
 <h2 id="workflow">Workflow<a class="anchor" aria-label="anchor" href="#workflow"></a></h2>
 <ul><li>Make small commits, one per logical unit, with the code, its tests and its regenerated docs together.</li>
 <li>Don’t push; the maintainer reviews first.</li>
