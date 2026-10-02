@@ -162,5 +162,8 @@ devtools::test()   # uses recorded mocks; no API key needed
 devtools::check()
 ```
 
+`tests/testthat/test-live.R` also runs a few tests against the live API when
+`TYPESAFE_API_KEY` is set. They're skipped on CRAN and CI.
+
 See [AGENTS.md](AGENTS.md) for the package layout, conventions, JSON
 serialization gotchas, and how the test fixtures are generated.

@@ -90,6 +90,10 @@ sent with `httr2::req_body_raw()`, so tests can assert the exact bytes.
 - **Retries:** httr2 mocking bypasses the retry loop, so retry behavior is
   tested against a local webfakes server in `test-retry.R`. Those tests are
   skipped when webfakes isn't installed.
+- **Live tests:** `test-live.R` calls the real API through
+  `skip_if_no_live_api()`. They run locally only when `TYPESAFE_API_KEY` is
+  set, and are skipped on CRAN and CI. Assert structure and clear-cut
+  semantics only, keep the calls few and small, and never print the key.
 - **Helpers:** call `local_ts_env()` to use a fake key and the default base
   URL, and `local_no_backoff()` to make retries instant.
 - **Snapshots:** error and print output are snapshot-tested. Review changes in

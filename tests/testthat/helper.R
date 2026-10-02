@@ -30,3 +30,15 @@ ok_body <- function(answers = list(q = list(type = "noul", noul = 0.5))) {
 }
 
 spec_state <- "Help! My payouts have been failing for 3 days."
+
+# Live tests call the real API. They run only when TYPESAFE_API_KEY is set,
+# and never on CRAN or CI.
+skip_if_no_live_api <- function() {
+  testthat::skip_on_cran()
+  testthat::skip_on_ci()
+  if (!nzchar(Sys.getenv("TYPESAFE_API_KEY"))) {
+    testthat::skip("TYPESAFE_API_KEY is not set")
+  }
+  # Make sure a test override doesn't redirect live calls.
+  withr::local_envvar(TYPESAFE_BASE_URL = NA, .local_envir = parent.frame())
+}
