@@ -1,5 +1,7 @@
 ---
-format: gfm
+format:
+  gfm:
+    wrap: preserve
 knitr:
   opts_chunk:
     collapse: true
@@ -24,11 +26,13 @@ options(width = 90)
 [![R-CMD-check](https://github.com/parmsam/typesafer/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/parmsam/typesafer/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-> This package is experimental.
+> This package is experimental. To learn how Jev and the System One API work
+> (state, question types, confidence, and patterns), read the official
+> [TypeSafe docs](https://docs.typesafe.ai/).
 
 typesafer brings TypeSafe's typed, calibrated decisions to R.
 
-typesafer is an **unofficial** R client for the
+It's an **unofficial** client for the
 [TypeSafe System One API](https://docs.typesafe.ai/api). You send a piece of
 state (text or structured data) and a set of typed questions, and get back
 calibrated probabilities your code can act on:
@@ -68,12 +72,8 @@ Ask several questions about one piece of state in a single request:
 
 ```{r}
 #| label: quickstart
-#| eval: false
 library(typesafer)
-```
 
-```{r}
-#| label: quickstart-call
 resp <- system_one(
   "I was charged twice. Please help ASAP.",
   billing = ts_noul("Is this about billing?"),
@@ -93,7 +93,8 @@ resp
 ```
 
 Scores use the API's 0-based scale. With levels `c("low", "medium", "high")`, a
-score near 2 means `"high"`. The full distribution is ordered by level:
+score near 2 means `"high"`. The full distribution is ordered by level. The API
+rounds the probabilities it reports, so they may not reproduce `score` exactly:
 
 ```{r}
 resp@answers$urgency@probabilities
@@ -129,7 +130,7 @@ tibble with answer columns added:
 tickets <- tibble::tibble(
   id = 1:3,
   text = c(
-    "I was charged twice. Please help ASAP.",
+    "Please cancel my subscription and refund this month.",
     "How do I export my data to CSV?",
     "Your app crashed and I lost an hour of work!!"
   )
@@ -195,6 +196,7 @@ tryCatch(
 `ts_models()` lists the models your account can use:
 
 ```{r}
+#| R.options: !expr list(width = 130)
 ts_models()
 ```
 

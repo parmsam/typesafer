@@ -8,19 +8,20 @@
 
 <!-- badges: start -->
 
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/parmsam/typesafer/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/parmsam/typesafer/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-> This package is experimental.
+> This package is experimental. To learn how Jev and the System One API work
+> (state, question types, confidence, and patterns), read the official
+> [TypeSafe docs](https://docs.typesafe.ai/).
 
 typesafer brings TypeSafe’s typed, calibrated decisions to R.
 
-typesafer is an **unofficial** R client for the [TypeSafe System One
-API](https://docs.typesafe.ai/api). You send a piece of state (text or
-structured data) and a set of typed questions, and get back calibrated
-probabilities your code can act on:
+It’s an **unofficial** client for the
+[TypeSafe System One API](https://docs.typesafe.ai/api). You send a piece of
+state (text or structured data) and a set of typed questions, and get back
+calibrated probabilities your code can act on:
 
 - `ts_noul()`: yes/no questions. The answer is the probability of yes.
 - `ts_choice()`: pick one of up to 255 options. The answer is the chosen
@@ -42,9 +43,9 @@ pak::pak("parmsam/typesafer")
 
 ## Authentication
 
-Get an API key from TypeSafe and set it in the `TYPESAFE_API_KEY`
-environment variable, for example by adding this line to your
-`.Renviron` (`usethis::edit_r_environ()`):
+Get an API key from TypeSafe and set it in the `TYPESAFE_API_KEY` environment
+variable, for example by adding this line to your `.Renviron`
+(`usethis::edit_r_environ()`):
 
     TYPESAFE_API_KEY=your-key-here
 
@@ -54,9 +55,7 @@ Ask several questions about one piece of state in a single request:
 
 ``` r
 library(typesafer)
-```
 
-``` r
 resp <- system_one(
   "I was charged twice. Please help ASAP.",
   billing = ts_noul("Is this about billing?"),
@@ -69,7 +68,7 @@ resp@answers$billing@prob
 resp@answers$tone@choice
 #> [1] "angry"
 resp@answers$urgency@score
-#> [1] 1.89
+#> [1] 1.9
 ```
 
 Printing the response gives a one-line summary per answer:
@@ -78,21 +77,21 @@ Printing the response gives a one-line summary per answer:
 resp
 #> <ts_response> jev-1.13.0 | 346 input / 65 output tokens
 #>   billing noul   0.98
-#>   tone    choice "angry"    (confidence 0.96)
-#>   urgency score  1.89 [0-2] (confidence 0.84)
+#>   tone    choice "angry"    (confidence 0.97)
+#>   urgency score  1.90 [0-2] (confidence 0.85)
 ```
 
-Scores use the API’s 0-based scale. With levels
-`c("low", "medium", "high")`, a score near 2 means `"high"`. The full
-distribution is ordered by level:
+Scores use the API’s 0-based scale. With levels `c("low", "medium", "high")`, a
+score near 2 means `"high"`. The full distribution is ordered by level. The API
+rounds the probabilities it reports, so they may not reproduce `score` exactly:
 
 ``` r
 resp@answers$urgency@probabilities
 #> [1] 0.0 0.1 0.9
 ```
 
-Choice options can carry descriptions, and instructions, options, and
-levels can all be structured lists:
+Choice options can carry descriptions, and instructions, options, and levels
+can all be structured lists:
 
 ``` r
 ts_choice(
@@ -119,15 +118,15 @@ ts_noul(
 
 ## Data frames
 
-`system_one_df()` sends one request per row, with every question batched
-into that request, and runs the requests in parallel. It returns the
-input as a tibble with answer columns added:
+`system_one_df()` sends one request per row, with every question batched into
+that request, and runs the requests in parallel. It returns the input as a
+tibble with answer columns added:
 
 ``` r
 tickets <- tibble::tibble(
   id = 1:3,
   text = c(
-    "I was charged twice. Please help ASAP.",
+    "Please cancel my subscription and refund this month.",
     "How do I export my data to CSV?",
     "Your app crashed and I lost an hour of work!!"
   )
@@ -143,22 +142,22 @@ system_one_df(
 #> # A tibble: 3 × 7
 #>      id text                      billing tone  tone_confidence urgency urgency_confidence
 #>   <int> <chr>                       <dbl> <chr>           <dbl>   <dbl>              <dbl>
-#> 1     1 I was charged twice. Ple…    0.98 angry            0.97    1.9                0.85
-#> 2     2 How do I export my data …    0.05 calm             1       0.06               0.9 
-#> 3     3 Your app crashed and I l…    0.05 angry            1       1.86               0.78
+#> 1     1 Please cancel my subscri…    0.97 calm             0.95    1.16               0.54
+#> 2     2 How do I export my data …    0.05 calm             1       0.1                0.84
+#> 3     3 Your app crashed and I l…    0.05 angry            1       1.83               0.74
 ```
 
-Set `probs = TRUE` to also get each choice and score probability
-distribution as a list-column. Use `on_error = "continue"` to keep the
-rows that succeeded when some requests fail. Failed rows get `NA`
-answers and their errors go in an `.error` column.
+Set `probs = TRUE` to also get each choice and score probability distribution
+as a list-column. Use `on_error = "continue"` to keep the rows that succeeded
+when some requests fail. Failed rows get `NA` answers and their errors go in an
+`.error` column.
 
 ## Errors and retries
 
-Requests that are rate limited (429), hit an overloaded server (529) or
-another 5xx, time out (408), or fail to connect are retried twice with
-exponential backoff. `retry-after` headers are respected. Errors are
-classed conditions that inherit from `typesafer_error`:
+Requests that are rate limited (429), hit an overloaded server (529) or another
+5xx, time out (408), or fail to connect are retried twice with exponential
+backoff. `retry-after` headers are respected. Errors are classed conditions
+that inherit from `typesafer_error`:
 
 | Class                        | When                                     |
 |------------------------------|------------------------------------------|
@@ -185,8 +184,8 @@ system_one("Hi", q = ts_noul("Is this a greeting?"), api_key = "not-a-real-key")
 #> Error in `system_one()`:
 #> ! TypeSafe API rejected the API key (HTTP 401).
 #> ✖ Cannot authenticate with the server. Please check your API key and try again.
-#> ℹ Check the key in the `TYPESAFE_API_KEY` environment variable.
-#> ℹ Request ID: req_01a0fe0475cc7c8eb7f51134dfdb438d
+#> ℹ Check the key passed to `api_key`.
+#> ℹ Request ID: req_01a0fe0a634e74d391b9c51101629d32
 ```
 
 Catch them by class:
@@ -207,14 +206,14 @@ tryCatch(
 ``` r
 ts_models()
 #> # A tibble: 2 × 3
-#>   name        description                                                     release_date
-#>   <chr>       <chr>                                                           <date>      
-#> 1 jev-latest  The latest iteration of TypeSafe's System One Model: Jev        2026-09-10  
-#> 2 jev-preview A preview version of `jev-latest`: should be better in most wa… 2026-09-10
+#>   name        description                                                      release_date
+#>   <chr>       <chr>                                                            <date>      
+#> 1 jev-latest  The latest iteration of TypeSafe's System One Model: Jev         2026-09-10  
+#> 2 jev-preview A preview version of `jev-latest`: should be better in most ways 2026-09-10
 ```
 
-`jev-latest` is the default. Pin a versioned ID such as `jev-1.13.0` if
-you have tuned thresholds against a specific release.
+`jev-latest` is the default. Pin a versioned ID such as `jev-1.13.0` if you
+have tuned thresholds against a specific release.
 
 ## Development
 
@@ -223,26 +222,25 @@ devtools::test()   # uses recorded mocks; no API key needed
 devtools::check()
 ```
 
-`tests/testthat/test-live.R` also runs a few tests against the live API
-when `TYPESAFE_API_KEY` is set. They’re skipped on CRAN and CI.
+`tests/testthat/test-live.R` also runs a few tests against the live API when
+`TYPESAFE_API_KEY` is set. They’re skipped on CRAN and CI.
 
 This README is generated from `README.qmd`. Edit that file, then run
-`quarto render README.qmd` with `TYPESAFE_API_KEY` set, because the
-examples call the live API.
+`quarto render README.qmd` with `TYPESAFE_API_KEY` set, because the examples
+call the live API.
 
 See [AGENTS.md](AGENTS.md) for the package layout, conventions, JSON
 serialization gotchas, and how the test fixtures are generated.
 
 ## Acknowledgements
 
-- The [TypeSafe Python
-  SDK](https://github.com/typesafe-ai/typesafe-sdk-python/tree/main) is
-  the reference implementation. typesafer follows its request shapes,
-  retry policy, and error handling wherever the [API
-  docs](https://docs.typesafe.ai) leave a behavior unspecified.
-- [ellmer](https://github.com/tidyverse/ellmer) inspired the design.
-  Typed questions and answers are S7 classes, requests go through httr2,
-  and `system_one_df()` is modeled on `parallel_chat_structured()`.
+- The [TypeSafe Python SDK](https://github.com/typesafe-ai/typesafe-sdk-python/tree/main)
+  is the reference implementation. typesafer follows its request shapes, retry
+  policy, and error handling wherever the
+  [API docs](https://docs.typesafe.ai) leave a behavior unspecified.
+- [ellmer](https://github.com/tidyverse/ellmer) inspired the design. Typed
+  questions and answers are S7 classes, requests go through httr2, and
+  `system_one_df()` is modeled on `parallel_chat_structured()`.
 
 ## License
 
