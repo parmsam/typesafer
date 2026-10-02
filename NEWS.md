@@ -1,5 +1,9 @@
 # typesafer (development version)
 
+* `system_one()`, `system_one_df()`, and `ts_models()` gain `max_tries` and
+  `timeout` arguments to control retries and the per-attempt timeout for a
+  single call, like the Python SDK's per-call retry and timeout overrides.
+
 * `as_tibble()` turns a `ts_response` into a one-row tibble with the same
   answer columns as `system_one_df()`, including `probs = TRUE`.
 

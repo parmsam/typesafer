@@ -1,5 +1,6 @@
 #' @section Options:
-#' * `typesafer.timeout`: per-request timeout in seconds (default `10`).
+#' * `typesafer.timeout`: default per-attempt timeout in seconds (default
+#'   `10`); override per call with the `timeout` argument.
 #'
 #' @section Environment variables:
 #' * `TYPESAFE_API_KEY`: API key used by [ts_api_key()].

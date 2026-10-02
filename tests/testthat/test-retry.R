@@ -107,3 +107,58 @@ test_that("parallel requests in system_one_df() are retried", {
   out <- system_one_df(data.frame(s = c("r1", "r2", "r3")), s, q = ts_noul("?"), max_active = 2)
   expect_equal(out$q, c(0.5, 0.5, 0.5))
 })
+
+test_that("max_tries and timeout are passed to each request", {
+  local_ts_env()
+  seen <- list()
+  httr2::local_mocked_responses(function(req) {
+    seen[[length(seen) + 1]] <<- req
+    if (grepl("models", req$url)) json_response(body = list(models = list())) else json_response(body = ok_body())
+  })
+  system_one("x", q = ts_noul("?"), max_tries = 5, timeout = 2.5)
+  system_one_df(data.frame(s = "x"), s, q = ts_noul("?"), max_tries = 1, timeout = 7)
+  ts_models(max_tries = 4, timeout = 3)
+
+  expect_equal(seen[[1]]$policies$retry_max_tries, 5)
+  expect_equal(seen[[1]]$options$timeout_ms, 2500)
+  expect_equal(seen[[2]]$policies$retry_max_tries, 1)
+  expect_equal(seen[[2]]$options$timeout_ms, 7000)
+  expect_equal(seen[[3]]$policies$retry_max_tries, 4)
+  expect_equal(seen[[3]]$options$timeout_ms, 3000)
+})
+
+test_that("timeout defaults to the typesafer.timeout option", {
+  local_ts_env()
+  withr::local_options(typesafer.timeout = 42)
+  seen <- NULL
+  httr2::local_mocked_responses(function(req) {
+    seen <<- req
+    json_response(body = ok_body())
+  })
+  system_one("x", q = ts_noul("?"))
+  expect_equal(seen$options$timeout_ms, 42000)
+  expect_equal(seen$policies$retry_max_tries, 3)
+})
+
+test_that("max_tries and timeout are validated", {
+  local_ts_env()
+  httr2::local_mocked_responses(function(req) stop("should not be called"))
+  for (bad in list(0, 1.5, NA, "3", c(2, 3))) {
+    expect_error(system_one("x", q = ts_noul("?"), max_tries = bad), class = "typesafer_error_input")
+  }
+  for (bad in list(0, -1, NA_real_, Inf, "10", c(1, 2))) {
+    expect_error(system_one("x", q = ts_noul("?"), timeout = bad), class = "typesafer_error_input")
+  }
+  expect_error(system_one_df(data.frame(s = "x"), s, q = ts_noul("?"), max_tries = 0), class = "typesafer_error_input")
+  expect_error(ts_models(timeout = 0), class = "typesafer_error_input")
+})
+
+test_that("max_tries = 1 disables retries", {
+  skip_if_not_installed("webfakes")
+  local_no_backoff()
+  srv <- webfakes::local_app_process(retry_app())
+  withr::local_envvar(TYPESAFE_API_KEY = "k", TYPESAFE_BASE_URL = srv$url("/limited"))
+
+  err <- expect_error(system_one("x", q = ts_noul("?"), max_tries = 1), class = "typesafer_error_rate_limit")
+  expect_equal(httr2::resp_header(err$resp, "x-attempts"), "1")
+})

@@ -13,9 +13,11 @@
 #' \dontrun{
 #' ts_models()
 #' }
-ts_models <- function(api_key = ts_api_key()) {
+ts_models <- function(max_tries = 3, timeout = ts_timeout(), api_key = ts_api_key()) {
+  check_retry_args(max_tries, timeout)
   check_api_key(api_key)
-  body <- ts_perform(ts_request("v1/models", api_key), api_key = api_key)
+  req <- ts_request("v1/models", api_key, max_tries = max_tries, timeout = timeout)
+  body <- ts_perform(req, api_key = api_key)
   models <- body$models %||% list()
   chr <- function(field) {
     vapply(models, function(m) as.character(m[[field]] %||% NA_character_), character(1))

@@ -15,6 +15,12 @@
 #'   `TYPESAFE_DEFAULT_MODEL` environment variable says otherwise. Pin a
 #'   versioned ID such as `"jev-1.13.0"` to keep answers stable. See
 #'   [ts_models()].
+#' @param max_tries Maximum number of attempts per request, including the
+#'   first. Requests that fail with 408, 429, 5xx, or a connection failure are
+#'   retried with exponential backoff, within a 30 second retry budget. Use
+#'   `1` to disable retries.
+#' @param timeout Timeout for each attempt, in seconds. Defaults to the
+#'   `typesafer.timeout` option, or 10.
 #' @param api_key API key; defaults to [ts_api_key()].
 #' @returns A [ts_response]. Answers are in `@answers`, named like the
 #'   questions; the model that answered is in `@model`, and token counts are
@@ -36,13 +42,19 @@
 #' resp@answers$tone@choice
 #' resp@answers$urgency@score
 #' }
-system_one <- function(state, ..., model = ts_default_model(), api_key = ts_api_key()) {
+system_one <- function(state,
+                       ...,
+                       model = ts_default_model(),
+                       max_tries = 3,
+                       timeout = ts_timeout(),
+                       api_key = ts_api_key()) {
   check_state(state)
   questions <- check_questions(rlang::list2(...))
   check_model(model)
+  check_retry_args(max_tries, timeout)
   check_api_key(api_key)
 
-  req <- ts_request("v1/systemone", api_key)
+  req <- ts_request("v1/systemone", api_key, max_tries = max_tries, timeout = timeout)
   req <- ts_req_body(req, system_one_body(state, questions, model))
   parse_response(ts_perform(req, api_key = api_key))
 }

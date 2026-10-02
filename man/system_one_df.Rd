@@ -12,6 +12,8 @@ system_one_df(
   probs = FALSE,
   max_active = 10,
   on_error = c("stop", "continue"),
+  max_tries = 3,
+  timeout = ts_timeout(),
   api_key = ts_api_key()
 )
 }
@@ -48,6 +50,14 @@ field.
 \code{NA}, add a \code{.error} list-column holding each row's error (or \code{NULL}),
 and warn with a count of failed rows.
 }}
+
+\item{max_tries}{Maximum number of attempts per request, including the
+first. Requests that fail with 408, 429, 5xx, or a connection failure are
+retried with exponential backoff, within a 30 second retry budget. Use
+\code{1} to disable retries.}
+
+\item{timeout}{Timeout for each attempt, in seconds. Defaults to the
+\code{typesafer.timeout} option, or 10.}
 
 \item{api_key}{API key; defaults to \code{\link[=ts_api_key]{ts_api_key()}}.}
 }

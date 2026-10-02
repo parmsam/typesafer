@@ -4,9 +4,17 @@
 \alias{ts_models}
 \title{List available models}
 \usage{
-ts_models(api_key = ts_api_key())
+ts_models(max_tries = 3, timeout = ts_timeout(), api_key = ts_api_key())
 }
 \arguments{
+\item{max_tries}{Maximum number of attempts per request, including the
+first. Requests that fail with 408, 429, 5xx, or a connection failure are
+retried with exponential backoff, within a 30 second retry budget. Use
+\code{1} to disable retries.}
+
+\item{timeout}{Timeout for each attempt, in seconds. Defaults to the
+\code{typesafer.timeout} option, or 10.}
+
 \item{api_key}{API key; defaults to \code{\link[=ts_api_key]{ts_api_key()}}.}
 }
 \value{

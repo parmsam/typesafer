@@ -4,7 +4,14 @@
 \alias{system_one}
 \title{Ask System One questions about a state}
 \usage{
-system_one(state, ..., model = ts_default_model(), api_key = ts_api_key())
+system_one(
+  state,
+  ...,
+  model = ts_default_model(),
+  max_tries = 3,
+  timeout = ts_timeout(),
+  api_key = ts_api_key()
+)
 }
 \arguments{
 \item{state}{The content to evaluate: a single string, or a list for
@@ -21,6 +28,14 @@ model. You can also splice a named list of questions with \verb{!!!}.}
 \code{TYPESAFE_DEFAULT_MODEL} environment variable says otherwise. Pin a
 versioned ID such as \code{"jev-1.13.0"} to keep answers stable. See
 \code{\link[=ts_models]{ts_models()}}.}
+
+\item{max_tries}{Maximum number of attempts per request, including the
+first. Requests that fail with 408, 429, 5xx, or a connection failure are
+retried with exponential backoff, within a 30 second retry budget. Use
+\code{1} to disable retries.}
+
+\item{timeout}{Timeout for each attempt, in seconds. Defaults to the
+\code{typesafer.timeout} option, or 10.}
 
 \item{api_key}{API key; defaults to \code{\link[=ts_api_key]{ts_api_key()}}.}
 }

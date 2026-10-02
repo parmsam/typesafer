@@ -65,22 +65,35 @@ check_api_key <- function(api_key, call = rlang::caller_env()) {
   }
 }
 
-ts_request <- function(path, api_key) {
+ts_request <- function(path, api_key, max_tries = 3, timeout = ts_timeout()) {
   req <- httr2::request(ts_base_url())
   req <- httr2::req_url_path_append(req, path)
   req <- httr2::req_auth_bearer_token(req, api_key)
   req <- httr2::req_headers(req, Accept = "application/json")
   req <- httr2::req_user_agent(req, ts_user_agent())
-  req <- httr2::req_timeout(req, getOption("typesafer.timeout", 10))
+  req <- httr2::req_timeout(req, timeout)
   httr2::req_retry(
     req,
-    max_tries = 3,
+    max_tries = max_tries,
     max_seconds = 30,
     retry_on_failure = TRUE,
     is_transient = ts_is_transient,
     backoff = ts_backoff,
     after = ts_retry_after
   )
+}
+
+ts_timeout <- function() {
+  getOption("typesafer.timeout", 10)
+}
+
+check_retry_args <- function(max_tries, timeout, call = rlang::caller_env()) {
+  if (!rlang::is_scalar_integerish(max_tries) || is.na(max_tries) || max_tries < 1) {
+    abort_input("{.arg max_tries} must be a whole number of at least 1.", call = call)
+  }
+  if (!(is.numeric(timeout) && length(timeout) == 1 && is.finite(timeout) && timeout > 0)) {
+    abort_input("{.arg timeout} must be a positive number of seconds.", call = call)
+  }
 }
 
 ts_req_body <- function(req, data) {

@@ -55,6 +55,8 @@ system_one_df <- function(.data,
                           probs = FALSE,
                           max_active = 10,
                           on_error = c("stop", "continue"),
+                          max_tries = 3,
+                          timeout = ts_timeout(),
                           api_key = ts_api_key()) {
   if (!is.data.frame(.data)) {
     abort_input("{.arg .data} must be a data frame, not {.obj_type_friendly {(.data)}}.")
@@ -72,6 +74,7 @@ system_one_df <- function(.data,
     abort_input("{.arg max_active} must be a whole number of at least 1.")
   }
   on_error <- rlang::arg_match(on_error)
+  check_retry_args(max_tries, timeout)
 
   out <- tibble::as_tibble(.data)
   n <- nrow(out)
@@ -95,7 +98,8 @@ system_one_df <- function(.data,
   if (n > 0) {
     check_api_key(api_key)
     reqs <- lapply(states, function(s) {
-      ts_req_body(ts_request("v1/systemone", api_key), system_one_body(s, questions, model))
+      req <- ts_request("v1/systemone", api_key, max_tries = max_tries, timeout = timeout)
+      ts_req_body(req, system_one_body(s, questions, model))
     })
     resps <- httr2::req_perform_parallel(
       reqs,

@@ -13,7 +13,8 @@ An unofficial client for the TypeSafe System One API \url{https://docs.typesafe.
 \section{Options}{
 
 \itemize{
-\item \code{typesafer.timeout}: per-request timeout in seconds (default \code{10}).
+\item \code{typesafer.timeout}: default per-attempt timeout in seconds (default
+\code{10}); override per call with the \code{timeout} argument.
 }
 }
 
