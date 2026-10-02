@@ -8,7 +8,7 @@ system_one_df(
   .data,
   state,
   ...,
-  model = "jev-latest",
+  model = ts_default_model(),
   probs = FALSE,
   max_active = 10,
   on_error = c("stop", "continue"),
@@ -28,8 +28,10 @@ structured state (a list) per row.}
 \code{\link[=ts_score]{ts_score()}}. The names identify the answers and aren't shown to the
 model. You can also splice a named list of questions with \verb{!!!}.}
 
-\item{model}{The model to use. \code{"jev-latest"} is TypeSafe's flagship model;
-pin a versioned ID such as \code{"jev-1.13.0"} to keep answers stable. See
+\item{model}{The model to use. Defaults to \code{\link[=ts_default_model]{ts_default_model()}}, which is
+\code{"jev-latest"}, TypeSafe's flagship model, unless the
+\code{TYPESAFE_DEFAULT_MODEL} environment variable says otherwise. Pin a
+versioned ID such as \code{"jev-1.13.0"} to keep answers stable. See
 \code{\link[=ts_models]{ts_models()}}.}
 
 \item{probs}{If \code{TRUE}, also add a \verb{<name>_probs} list-column for each

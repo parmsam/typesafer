@@ -51,7 +51,7 @@
 system_one_df <- function(.data,
                           state,
                           ...,
-                          model = "jev-latest",
+                          model = ts_default_model(),
                           probs = FALSE,
                           max_active = 10,
                           on_error = c("stop", "continue"),

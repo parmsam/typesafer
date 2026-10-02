@@ -24,6 +24,22 @@ ts_api_key <- function() {
   key
 }
 
+#' Get the default model
+#'
+#' Reads the `TYPESAFE_DEFAULT_MODEL` environment variable (the same variable
+#' the Python SDK uses), falling back to `"jev-latest"`. Set it to pin a
+#' versioned model such as `"jev-1.13.0"` for every call without passing
+#' `model` each time.
+#'
+#' @returns The model name, a string.
+#' @export
+#' @examples
+#' ts_default_model()
+ts_default_model <- function() {
+  model <- Sys.getenv("TYPESAFE_DEFAULT_MODEL")
+  if (nzchar(model)) model else "jev-latest"
+}
+
 ts_base_url <- function() {
   url <- Sys.getenv("TYPESAFE_BASE_URL")
   if (!nzchar(url)) {

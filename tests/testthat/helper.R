@@ -4,6 +4,7 @@ local_ts_env <- function(env = parent.frame()) {
   withr::local_envvar(
     TYPESAFE_API_KEY = "test-key",
     TYPESAFE_BASE_URL = NA,
+    TYPESAFE_DEFAULT_MODEL = NA,
     .local_envir = env
   )
 }

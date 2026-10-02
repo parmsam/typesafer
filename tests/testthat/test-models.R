@@ -27,3 +27,28 @@ test_that("ts_models() raises classed errors", {
   httr2::local_mocked_responses(function(req) json_response(401, list(detail = "bad key")))
   expect_error(ts_models(), class = "typesafer_error_auth")
 })
+
+test_that("ts_default_model() reads TYPESAFE_DEFAULT_MODEL", {
+  withr::local_envvar(TYPESAFE_DEFAULT_MODEL = NA)
+  expect_equal(ts_default_model(), "jev-latest")
+  withr::local_envvar(TYPESAFE_DEFAULT_MODEL = "")
+  expect_equal(ts_default_model(), "jev-latest")
+  withr::local_envvar(TYPESAFE_DEFAULT_MODEL = "jev-1.13.0")
+  expect_equal(ts_default_model(), "jev-1.13.0")
+})
+
+test_that("system_one() and system_one_df() use the default model", {
+  local_ts_env()
+  withr::local_envvar(TYPESAFE_DEFAULT_MODEL = "jev-1.13.0")
+  models <- character()
+  httr2::local_mocked_responses(function(req) {
+    models <<- c(models, jsonlite::fromJSON(req$body$data)$model)
+    json_response(body = ok_body())
+  })
+  system_one("x", q = ts_noul("?"))
+  system_one_df(data.frame(s = c("a", "b")), s, q = ts_noul("?"))
+  system_one("x", q = ts_noul("?"), model = "jev-preview")
+  expect_equal(models[1], "jev-1.13.0")
+  expect_setequal(models[2:3], "jev-1.13.0")
+  expect_equal(models[4], "jev-preview")
+})

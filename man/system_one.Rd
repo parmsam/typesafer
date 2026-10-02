@@ -4,7 +4,7 @@
 \alias{system_one}
 \title{Ask System One questions about a state}
 \usage{
-system_one(state, ..., model = "jev-latest", api_key = ts_api_key())
+system_one(state, ..., model = ts_default_model(), api_key = ts_api_key())
 }
 \arguments{
 \item{state}{The content to evaluate: a single string, or a list for
@@ -16,8 +16,10 @@ object, an unnamed list a JSON array). See
 \code{\link[=ts_score]{ts_score()}}. The names identify the answers and aren't shown to the
 model. You can also splice a named list of questions with \verb{!!!}.}
 
-\item{model}{The model to use. \code{"jev-latest"} is TypeSafe's flagship model;
-pin a versioned ID such as \code{"jev-1.13.0"} to keep answers stable. See
+\item{model}{The model to use. Defaults to \code{\link[=ts_default_model]{ts_default_model()}}, which is
+\code{"jev-latest"}, TypeSafe's flagship model, unless the
+\code{TYPESAFE_DEFAULT_MODEL} environment variable says otherwise. Pin a
+versioned ID such as \code{"jev-1.13.0"} to keep answers stable. See
 \code{\link[=ts_models]{ts_models()}}.}
 
 \item{api_key}{API key; defaults to \code{\link[=ts_api_key]{ts_api_key()}}.}

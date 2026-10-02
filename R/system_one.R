@@ -10,8 +10,10 @@
 #' @param ... Named questions created with [ts_noul()], [ts_choice()], or
 #'   [ts_score()]. The names identify the answers and aren't shown to the
 #'   model. You can also splice a named list of questions with `!!!`.
-#' @param model The model to use. `"jev-latest"` is TypeSafe's flagship model;
-#'   pin a versioned ID such as `"jev-1.13.0"` to keep answers stable. See
+#' @param model The model to use. Defaults to [ts_default_model()], which is
+#'   `"jev-latest"`, TypeSafe's flagship model, unless the
+#'   `TYPESAFE_DEFAULT_MODEL` environment variable says otherwise. Pin a
+#'   versioned ID such as `"jev-1.13.0"` to keep answers stable. See
 #'   [ts_models()].
 #' @param api_key API key; defaults to [ts_api_key()].
 #' @returns A [ts_response]. Answers are in `@answers`, named like the
@@ -33,7 +35,7 @@
 #' resp@answers$tone@choice
 #' resp@answers$urgency@score
 #' }
-system_one <- function(state, ..., model = "jev-latest", api_key = ts_api_key()) {
+system_one <- function(state, ..., model = ts_default_model(), api_key = ts_api_key()) {
   check_state(state)
   questions <- check_questions(rlang::list2(...))
   check_model(model)

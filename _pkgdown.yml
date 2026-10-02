@@ -24,6 +24,7 @@ reference:
 - title: Models and authentication
   contents:
   - ts_models
+  - ts_default_model
   - ts_api_key
 - title: Errors
   contents: typesafer_error

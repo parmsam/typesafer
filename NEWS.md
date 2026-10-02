@@ -1,5 +1,9 @@
 # typesafer (development version)
 
+* New `ts_default_model()` reads the `TYPESAFE_DEFAULT_MODEL` environment
+  variable, matching the Python SDK, and is now the default `model` for
+  `system_one()` and `system_one_df()`. It falls back to `"jev-latest"`.
+
 * `ts_response` objects keep the parsed response body in `@json`, so fields
   and answer types typesafer doesn't model yet are still reachable.
 

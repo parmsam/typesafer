@@ -21,6 +21,8 @@ An unofficial client for the TypeSafe System One API \url{https://docs.typesafe.
 
 \itemize{
 \item \code{TYPESAFE_API_KEY}: API key used by \code{\link[=ts_api_key]{ts_api_key()}}.
+\item \code{TYPESAFE_DEFAULT_MODEL}: default model used by \code{\link[=ts_default_model]{ts_default_model()}}
+(default \code{jev-latest}).
 \item \code{TYPESAFE_BASE_URL}: override the API base URL
 (default \verb{https://api.typesafe.ai}).
 }
