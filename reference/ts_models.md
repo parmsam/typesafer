@@ -1,0 +1,32 @@
+# List available models
+
+Calls `GET /v1/models`, which lists the model names your account can
+send in the `model` argument. It currently lists the aliases (such as
+`"jev-latest"`); versioned IDs such as `"jev-1.13.0"` are accepted
+whether or not they're listed. See <https://docs.typesafe.ai/models>.
+
+## Usage
+
+``` r
+ts_models(api_key = ts_api_key())
+```
+
+## Arguments
+
+- api_key:
+
+  API key; defaults to
+  [`ts_api_key()`](https://parmsam.github.io/typesafer/reference/ts_api_key.md).
+
+## Value
+
+A tibble with columns `name`, `description`, and `release_date` (a
+Date).
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+ts_models()
+} # }
+```
