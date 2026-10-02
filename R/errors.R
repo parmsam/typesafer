@@ -89,6 +89,11 @@ validation_details <- function(body) {
   field <- vapply(entries, function(x) {
     loc <- unlist(x$loc)
     loc <- loc[loc != "body"]
+    # The API includes the question's type tag after its id
+    # (questions.<id>.<type>.criteria); drop it, as the Python SDK does.
+    if (length(loc) >= 3 && loc[[1]] == "questions" && loc[[3]] %in% c("noul", "choice", "score")) {
+      loc <- loc[-3]
+    }
     paste(loc, collapse = ".")
   }, character(1))
   tibble::tibble(

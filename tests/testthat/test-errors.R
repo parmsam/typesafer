@@ -31,15 +31,17 @@ test_that("401 is a typesafer_error_auth", {
 test_that("422 is a typesafer_error_validation with field details", {
   local_ts_env()
   resp <- json_response(422, list(detail = list(
-    list(loc = list("body", "questions", "tone", "criteria"), msg = "Field required", type = "missing"),
-    list(loc = list("body", "questions", "urgency", "criteria", 0L), msg = "Input should be a valid string", type = "string_type")
+    # Shape returned by the live API: the question type tag follows the id.
+    list(loc = list("body", "questions", "tone", "choice", "criteria"), msg = "Field required", type = "missing"),
+    list(loc = list("body", "questions", "urgency", "score", "criteria", 0L), msg = "Input should be a valid string", type = "string_type"),
+    list(loc = list("body", "state"), msg = "Field required", type = "missing")
   )))
   err <- expect_error(call_with_response(resp), class = "typesafer_error_validation")
   expect_s3_class(err, "typesafer_error_http")
   expect_equal(err$status, 422L)
-  expect_equal(err$details$field, c("questions.tone.criteria", "questions.urgency.criteria.0"))
-  expect_equal(err$details$message, c("Field required", "Input should be a valid string"))
-  expect_equal(err$details$type, c("missing", "string_type"))
+  expect_equal(err$details$field, c("questions.tone.criteria", "questions.urgency.criteria.0", "state"))
+  expect_equal(err$details$message, c("Field required", "Input should be a valid string", "Field required"))
+  expect_equal(err$details$type, c("missing", "string_type", "missing"))
   expect_snapshot(call_with_response(resp), error = TRUE)
 })
 

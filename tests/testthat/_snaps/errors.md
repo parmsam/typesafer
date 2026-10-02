@@ -27,6 +27,7 @@
       ! TypeSafe API rejected the request as invalid (HTTP 422).
       x questions.tone.criteria: Field required
       x questions.urgency.criteria.0: Input should be a valid string
+      x state: Field required
 
 # 429 and 529 are typesafer_error_rate_limit after retries
 
